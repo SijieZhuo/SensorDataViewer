@@ -17,9 +17,8 @@ using ShimmerAPI;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 using System.Text.RegularExpressions;
-
-
-
+using System.Threading;
+using System.ComponentModel;
 
 namespace stressProject
 {
@@ -34,26 +33,12 @@ namespace stressProject
         public MainWindow()
         {
             InitializeComponent();
-
-            //BTmap = checkBTConnection();
-
-
-
-
         }
 
-        /*for (int i = 0; i < 5; i++)
+        public void checkBTConnection()
         {
-            System.Windows.Controls.Button newBtn = new Button();
+            BTmap = new Dictionary<string, string>();
 
-            newBtn.Content = i.ToString();
-            newBtn.Name = "Button" + i.ToString();
-
-            sp.Children.Add(newBtn);
-        }*/
-
-        public Dictionary<string, string> checkBTConnection()
-        {
             BluetoothClient client = new BluetoothClient();
 
 
@@ -67,32 +52,64 @@ namespace stressProject
 
                 BTmap.Add(d.DeviceName, address);
 
-
-                //textBox.AppendText(d.DeviceAddress + "");
-                //textBox.Text.(d.DeviceAddress + "");
-
-                //
-
-
             }
 
-            return BTmap;
         }
 
-
-
-
-        protected void button_Click(object sender, RoutedEventArgs e)
+        protected void BTbtn_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
             textBox.Text = BTmap[button.Content.ToString()];
+            if (checkShimmer(button.Content.ToString()))
+            {
+                //ShimmerSensor sensor = new ShimmerSensor();
+                //sensor.setup(BTmap[button.Content.ToString()]);
+            }
+            else {
+                textBox.Text = "the device you trying to connect is not a shimmer sensor";
+            }
+
         }
 
         private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
         {
+            sp.Children.Clear();
 
-            BTmap = checkBTConnection();
+            Button button = sender as Button;
 
+            textBox.Text = "searching for bluetooth device";
+
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += new DoWorkEventHandler(bw_BT_DoWork);
+            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_BT_RunWorkerCompleted);
+
+            bw.RunWorkerAsync();
+
+        }
+
+
+        private bool checkShimmer(string name)
+        {
+            bool shimmerOrNot = name.Contains("Shimmer");
+            return shimmerOrNot;
+        }
+
+
+        public void updateTextBox(string content)
+        {
+            textBox.Text = content;
+        }
+
+
+        private void bw_BT_DoWork(object sender, DoWorkEventArgs e)
+        {
+            checkBTConnection();
+        }
+
+        private void bw_BT_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            textBox.Text = "searching completed";
 
             int i = 0;
             foreach (KeyValuePair<string, string> entry in BTmap)
@@ -103,10 +120,10 @@ namespace stressProject
                 newBtn.Name = "Button" + i.ToString();
                 i++;
                 sp.Children.Add(newBtn);
-                newBtn.Click += new RoutedEventHandler(button_Click);
+                newBtn.Click += new RoutedEventHandler(BTbtn_Click);
             }
-
         }
+
     }
 
 }
