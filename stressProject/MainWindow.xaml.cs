@@ -19,6 +19,7 @@ using Windows.Devices.Enumeration;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace stressProject
 {
@@ -30,9 +31,18 @@ namespace stressProject
 
         Dictionary<string, string> BTmap = new Dictionary<string, string>();
 
+        private MessageTransferStation mts;
+
+
+
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            mts = MessageTransferStation.Instance; 
+
         }
 
         public void checkBTConnection()
@@ -40,7 +50,6 @@ namespace stressProject
             BTmap = new Dictionary<string, string>();
 
             BluetoothClient client = new BluetoothClient();
-
 
             BluetoothDeviceInfo[] devices = client.DiscoverDevicesInRange();
 
@@ -62,10 +71,20 @@ namespace stressProject
             textBox.Text = BTmap[button.Content.ToString()];
             if (checkShimmer(button.Content.ToString()))
             {
-                //ShimmerSensor sensor = new ShimmerSensor();
-                //sensor.setup(BTmap[button.Content.ToString()]);
+                textBox.Text = "pairing device";
+                Debug.WriteLine("pairing device");
+                Debug.WriteLine("mainwindow"+Thread.CurrentThread.ManagedThreadId);
+
+                ShimmerSensor sensor = new ShimmerSensor(BTmap[button.Content.ToString()]);
+                Debug.WriteLine("object created");
+                //textBox.Text = "setting up " + name;
+                new Thread(sensor.setup).Start();
+                
+               
+
             }
-            else {
+            else
+            {
                 textBox.Text = "the device you trying to connect is not a shimmer sensor";
             }
 
@@ -77,8 +96,11 @@ namespace stressProject
 
             Button button = sender as Button;
 
-            textBox.Text = "searching for bluetooth device";
-
+            //textBox.Text = "searching for bluetooth device";
+            Debug.WriteLine("searching for bt device");
+            mts.MessageQueue = "searching for bluetooth device";
+            
+            Debug.WriteLine(mts.MessageQueue.LongCount());
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += new DoWorkEventHandler(bw_BT_DoWork);
             bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_BT_RunWorkerCompleted);
@@ -95,9 +117,12 @@ namespace stressProject
         }
 
 
-        public void updateTextBox(string content)
+        public void updateTextBox()
         {
-            textBox.Text = content;
+            Debug.WriteLine(mts.MessageQueue);
+            
+            textBox.Text = mts.MessageQueue;
+
         }
 
 
@@ -123,6 +148,11 @@ namespace stressProject
                 newBtn.Click += new RoutedEventHandler(BTbtn_Click);
             }
         }
+
+ 
+
+        
+
 
     }
 
