@@ -33,15 +33,11 @@ namespace stressProject
 
         private MessageTransferStation mts;
 
-
-
-
-
         public MainWindow()
         {
             InitializeComponent();
 
-            mts = MessageTransferStation.Instance; 
+            mts = MessageTransferStation.Instance;
 
         }
 
@@ -68,24 +64,19 @@ namespace stressProject
         protected void BTbtn_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
-            textBox.Text = BTmap[button.Content.ToString()];
             if (checkShimmer(button.Content.ToString()))
             {
-                textBox.Text = "pairing device";
-                Debug.WriteLine("pairing device");
-                Debug.WriteLine("mainwindow"+Thread.CurrentThread.ManagedThreadId);
+                mts.MessageText = "pairing device";
+                Debug.WriteLine("mainwindow" + Thread.CurrentThread.ManagedThreadId);
 
                 ShimmerSensor sensor = new ShimmerSensor(BTmap[button.Content.ToString()]);
                 Debug.WriteLine("object created");
-                //textBox.Text = "setting up " + name;
                 new Thread(sensor.setup).Start();
-                
-               
 
             }
             else
             {
-                textBox.Text = "the device you trying to connect is not a shimmer sensor";
+                mts.MessageText = "the device you trying to connect is not a shimmer sensor";
             }
 
         }
@@ -96,11 +87,10 @@ namespace stressProject
 
             Button button = sender as Button;
 
-            //textBox.Text = "searching for bluetooth device";
             Debug.WriteLine("searching for bt device");
-            mts.MessageQueue = "searching for bluetooth device";
-            
-            Debug.WriteLine(mts.MessageQueue.LongCount());
+            mts.MessageText = "searching for bluetooth device";
+
+            Debug.WriteLine(mts.MessageText.LongCount());
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += new DoWorkEventHandler(bw_BT_DoWork);
             bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_BT_RunWorkerCompleted);
@@ -119,9 +109,9 @@ namespace stressProject
 
         public void updateTextBox()
         {
-            Debug.WriteLine(mts.MessageQueue);
-            
-            textBox.Text = mts.MessageQueue;
+            Debug.WriteLine(mts.MessageText);
+
+            textBox.Text = mts.MessageText;
 
         }
 
@@ -133,8 +123,7 @@ namespace stressProject
 
         private void bw_BT_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
-            textBox.Text = "searching completed";
+            mts.MessageText = "searching completed";
 
             int i = 0;
             foreach (KeyValuePair<string, string> entry in BTmap)
@@ -149,9 +138,9 @@ namespace stressProject
             }
         }
 
- 
 
-        
+
+
 
 
     }

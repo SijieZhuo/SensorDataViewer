@@ -15,32 +15,29 @@ namespace stressProject
         public event PropertyChangedEventHandler PropertyChanged;
         public static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
 
-        private string _messageQueue;
+        private string _messageText;
         private MainWindow mw;
-
-        public Queue<string> testingQ = new Queue<string>();
 
         public static MessageTransferStation instance;
 
 
         public MessageTransferStation()
         {
-            _messageQueue = string.Empty;
+            _messageText = string.Empty;
             mw = (MainWindow)Application.Current.MainWindow;
         }
 
-        public string MessageQueue
+        public string MessageText
         {
-            get { return _messageQueue; }
+            get { return _messageText; }
             set
             {
-                _messageQueue = value;
+                _messageText = value;
                 Debug.WriteLine("changing value");
-                OnPropertyChanged("MessageQueue");
-                
+                OnPropertyChanged("MessageText");
+
                 mw.updateTextBox();
-               // autoResetEvent.WaitOne();
-                //updateTextBox();
+
             }
 
         }
@@ -63,10 +60,6 @@ namespace stressProject
                 }
                 return instance;
             }
-        }
-
-        public void eventSet() {
-            autoResetEvent.Set();
         }
 
 
