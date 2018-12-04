@@ -32,7 +32,7 @@ namespace stressProject
         public void setup()
         {
 
-            int enabledSensors = ((int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_GSR);
+            int enabledSensors = ((int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_GSR) | (int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_A_ACCEL;
 
             //shimmer = new Shimmer32Feet("ShimmerID1", "00:06:66:66:96:86");
             //devName,bluetoothAddress, samplingRate, accelRange, gsrRange, setEnabledSensors, enableLowPowerAccel, enableLowPowerGyro, enableLowPowerMag, gyroRange, magRange, exg1configuration, exg2configuration, internalexppower
@@ -91,7 +91,8 @@ namespace stressProject
 
                     Tuple<SensorData, TimeSpan> dataTuple = new Tuple<SensorData, TimeSpan>(data,time);
                     //objectCluster.GetNames
-                 
+
+                    
 
                     //updateMessage("AccelX: " + data.Data);
                     updateData(dataTuple);

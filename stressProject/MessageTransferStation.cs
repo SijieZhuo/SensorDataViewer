@@ -19,8 +19,8 @@ namespace stressProject
 
         private string _messageText;
         private MainWindow mw;
-        public ObservableCollection<Tuple<SensorData, TimeSpan>> shimmerData { get; set; }
         public Tuple<SensorData, TimeSpan> _data;
+        public List<Tuple<SensorData, TimeSpan>> shimmerData;
 
 
         public static MessageTransferStation instance;
@@ -30,8 +30,7 @@ namespace stressProject
         {
             _messageText = string.Empty;
             mw = (MainWindow)Application.Current.MainWindow;
-            shimmerData = new ObservableCollection<Tuple<SensorData, TimeSpan>>();
-            shimmerData.CollectionChanged += OnListChanged;
+            shimmerData = new List<Tuple<SensorData, TimeSpan>>();
         }
 
         public string MessageText
@@ -57,6 +56,7 @@ namespace stressProject
                 OnPropertyChanged("Data");
 
                 mw.updateShimmerChart(_data);
+                shimmerData.Add(_data);
 
             }
 
@@ -70,18 +70,6 @@ namespace stressProject
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         }
-
-
-        private void OnListChanged(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            //Debug.WriteLine(sender.GetType());
-            ObservableCollection<Tuple<SensorData, TimeSpan>> datalist = sender as ObservableCollection<Tuple<SensorData, TimeSpan>>;
-            //Debug.WriteLine(datalist.Last().Item1.Data);
-            mw.updateShimmerChart(datalist.Last());
-        }
-
-
-
 
 
         public static MessageTransferStation Instance
