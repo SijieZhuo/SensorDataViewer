@@ -1,5 +1,8 @@
-﻿using System;
+﻿using ShimmerAPI;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -13,10 +16,12 @@ namespace stressProject
     class MessageTransferStation : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
 
         private string _messageText;
         private MainWindow mw;
+        public ObservableCollection<Tuple<SensorData, TimeSpan>> shimmerData { get; set; }
+        public Tuple<SensorData, TimeSpan> _data;
+
 
         public static MessageTransferStation instance;
 
@@ -25,6 +30,8 @@ namespace stressProject
         {
             _messageText = string.Empty;
             mw = (MainWindow)Application.Current.MainWindow;
+            shimmerData = new ObservableCollection<Tuple<SensorData, TimeSpan>>();
+            shimmerData.CollectionChanged += OnListChanged;
         }
 
         public string MessageText
@@ -33,7 +40,6 @@ namespace stressProject
             set
             {
                 _messageText = value;
-                Debug.WriteLine("changing value");
                 OnPropertyChanged("MessageText");
 
                 mw.updateTextBox();
@@ -42,13 +48,41 @@ namespace stressProject
 
         }
 
+        public Tuple<SensorData,TimeSpan> Data
+        {
+            get { return _data; }
+            set
+            {
+                _data = value;
+                OnPropertyChanged("Data");
+
+                mw.updateShimmerChart(_data);
+
+            }
+
+        }
+
+
+
         // Create the OnPropertyChanged method to raise the event
         protected void OnPropertyChanged(string name)
         {
-            Debug.WriteLine("onpropertychanged called");
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         }
+
+
+        private void OnListChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            //Debug.WriteLine(sender.GetType());
+            ObservableCollection<Tuple<SensorData, TimeSpan>> datalist = sender as ObservableCollection<Tuple<SensorData, TimeSpan>>;
+            //Debug.WriteLine(datalist.Last().Item1.Data);
+            mw.updateShimmerChart(datalist.Last());
+        }
+
+
+
+
 
         public static MessageTransferStation Instance
         {
@@ -61,7 +95,5 @@ namespace stressProject
                 return instance;
             }
         }
-
-
     }
 }

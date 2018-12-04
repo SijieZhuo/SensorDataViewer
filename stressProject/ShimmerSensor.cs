@@ -16,26 +16,27 @@ namespace stressProject
 
         private string address;
         private MessageTransferStation mts;
+        Stopwatch stopwatch;
 
 
 
         public ShimmerSensor(string BTaddress)
         {
             address = BTaddress;
-            Debug.WriteLine("created");
             mts = MessageTransferStation.Instance;
+            stopwatch = new Stopwatch();
 
         }
 
 
         public void setup()
         {
-            Debug.WriteLine("created");
 
-            int enabledSensors = ((int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_A_ACCEL);
+            int enabledSensors = ((int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_GSR);
 
             //shimmer = new Shimmer32Feet("ShimmerID1", "00:06:66:66:96:86");
-            shimmer = new ShimmerLogAndStream32Feet("ShimmerID1", address, 102.4, 0, ShimmerBluetooth.GSR_RANGE_AUTO, enabledSensors, false, false, false, 1, 0, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP1, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP2, true);
+            //devName,bluetoothAddress, samplingRate, accelRange, gsrRange, setEnabledSensors, enableLowPowerAccel, enableLowPowerGyro, enableLowPowerMag, gyroRange, magRange, exg1configuration, exg2configuration, internalexppower
+            shimmer = new ShimmerLogAndStream32Feet("ShimmerID1", address, 51.2, 0, ShimmerBluetooth.GSR_RANGE_AUTO, enabledSensors, true, false, false, 1, 0, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP1, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP2, true);
 
             shimmer.UICallback += this.HandleEvent;
 
@@ -46,8 +47,11 @@ namespace stressProject
 
                 shimmer.WriteSensors(enabledSensors);
                 shimmer.StartStreaming();
+                stopwatch.Start();
+
 
             }
+
         }
 
         public void HandleEvent(object sender, EventArgs args)
@@ -80,9 +84,18 @@ namespace stressProject
                     break;
                 case (int)ShimmerBluetooth.ShimmerIdentifier.MSG_IDENTIFIER_DATA_PACKET:
                     ObjectCluster objectCluster = (ObjectCluster)eventArgs.getObject();
-                    SensorData data = objectCluster.GetData("Low Noise Accelerometer X", "CAL");
+                    SensorData data = objectCluster.GetData("GSR", "CAL");
+                   // SensorData time = objectCluster.GetData("Timestamp","CAL");
+                    TimeSpan time = stopwatch.Elapsed;
+                    //Debug.WriteLine(time.GetType());
 
-                    updateMessage("AccelX: " + data.Data);
+                    Tuple<SensorData, TimeSpan> dataTuple = new Tuple<SensorData, TimeSpan>(data,time);
+                    //objectCluster.GetNames
+                 
+
+                    //updateMessage("AccelX: " + data.Data);
+                    updateData(dataTuple);
+
                     break;
             }
         }
@@ -93,6 +106,16 @@ namespace stressProject
             {
                 mts.MessageText = message;
 
+            });
+        }
+
+
+        private void updateData(Tuple<SensorData,TimeSpan> data)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                //mts.shimmerData.Add(data);
+                mts.Data = data;
             });
         }
 
