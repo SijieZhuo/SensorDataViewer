@@ -53,13 +53,30 @@ namespace stressProject
         {
             InitializeComponent();
 
+            shimmerBtn.IsEnabled = false;
+
             mts = MessageTransferStation.Instance;
             chartSetup();
 
-
         }
 
+        private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            comboBox.Items.Clear();
 
+            Button button = sender as Button;
+
+            Debug.WriteLine("searching for bt device");
+            mts.MessageText = "searching for bluetooth device";
+
+            Debug.WriteLine(mts.MessageText.LongCount());
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += new DoWorkEventHandler(bw_BT_DoWork);
+            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_BT_RunWorkerCompleted);
+
+            bw.RunWorkerAsync();
+
+        }
 
         public void checkBTConnection()
         {
@@ -81,82 +98,6 @@ namespace stressProject
 
         }
 
-        protected void BTbtn_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = sender as Button;
-            if (checkShimmer(button.Content.ToString()))
-            {
-                mts.MessageText = "pairing device";
-                Debug.WriteLine("mainwindow" + Thread.CurrentThread.ManagedThreadId);
-
-                ShimmerSensor sensor = new ShimmerSensor(BTmap[button.Content.ToString()]);
-                Debug.WriteLine("object created");
-                new Thread(sensor.setup).Start();
-
-            }
-            else
-            {
-                mts.MessageText = "the device you trying to connect is not a shimmer sensor";
-            }
-
-        }
-
-        private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-            sp.Children.Clear();
-
-            Button button = sender as Button;
-
-            Debug.WriteLine("searching for bt device");
-            mts.MessageText = "searching for bluetooth device";
-
-            Debug.WriteLine(mts.MessageText.LongCount());
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += new DoWorkEventHandler(bw_BT_DoWork);
-            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_BT_RunWorkerCompleted);
-
-            bw.RunWorkerAsync();
-
-        }
-
-
-        private bool checkShimmer(string name)
-        {
-            bool shimmerOrNot = name.Contains("Shimmer");
-            return shimmerOrNot;
-        }
-
-
-        public void updateTextBox()
-        {
-            Debug.WriteLine(mts.MessageText);
-
-            textBox.Text = mts.MessageText;
-
-        }
-
-        public void updateShimmerChart(Tuple<SensorData, TimeSpan> data)
-        {
-            chart1.FastScrollMode = true;
-            Point[] points1 = new Point[clusterSize];
-
-            double minNewX = currCount-2000;
-
-            points1[0] = new Point(data.Item2.TotalSeconds,data.Item1.Data);
-            currCount++;
-            Debug.WriteLine(currCount + "  " + data.Item2.TotalSeconds);
-            series1.Data.AddRange(points1);
-
-            chart1.Commit();
-
-            DisposeOldData(series1);
-            
-
-
-        }
-
-
         private void bw_BT_DoWork(object sender, DoWorkEventArgs e)
         {
             checkBTConnection();
@@ -166,18 +107,16 @@ namespace stressProject
         {
             mts.MessageText = "searching completed";
 
-            int i = 0;
             foreach (KeyValuePair<string, string> entry in BTmap)
             {
-                Button newBtn = new Button();
-
-                newBtn.Content = entry.Key;
-                newBtn.Name = "Button" + i.ToString();
-                i++;
-                sp.Children.Add(newBtn);
-                newBtn.Click += new RoutedEventHandler(BTbtn_Click);
+                comboBox.Items.Add(entry.Key);
             }
+            comboBox.SelectedIndex = 0;
+            shimmerBtn.IsEnabled = true;
         }
+
+
+
 
         private void chartSetup()
         {
@@ -221,7 +160,6 @@ namespace stressProject
 
         }
 
-
         private void DisposeOldData(Series series)
         {
             if (series.Data.Count > 500 &&
@@ -229,6 +167,63 @@ namespace stressProject
                 series.Data.RemoveRange(0, 500);
         }
 
+
+
+
+
+        private bool checkShimmer(string name)
+        {
+            bool shimmerOrNot = name.Contains("Shimmer");
+            return shimmerOrNot;
+        }
+
+        private void Shimmer_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine(comboBox.SelectedItem.ToString());
+
+            if (checkShimmer(comboBox.SelectedItem.ToString()))
+            {
+                mts.MessageText = "pairing device";
+                Debug.WriteLine("mainwindow" + Thread.CurrentThread.ManagedThreadId);
+
+                ShimmerSensor sensor = new ShimmerSensor(BTmap[comboBox.SelectedItem.ToString()]);
+                Debug.WriteLine("object created");
+                new Thread(sensor.setup).Start();
+
+            }
+            else
+            {
+                mts.MessageText = "the device you trying to connect is not a shimmer sensor";
+            }
+        }
+
+        public void updateShimmerChart(Tuple<SensorData, TimeSpan> data)
+        {
+            chart1.FastScrollMode = true;
+            Point[] points1 = new Point[clusterSize];
+
+            double minNewX = currCount - 2000;
+
+            points1[0] = new Point(data.Item2.TotalSeconds, data.Item1.Data);
+            currCount++;
+            Debug.WriteLine(currCount + "  " + data.Item2.TotalSeconds);
+            series1.Data.AddRange(points1);
+
+            chart1.Commit();
+
+            DisposeOldData(series1);
+
+
+
+        }
+
+        public void updateTextBox()
+        {
+            Debug.WriteLine(mts.MessageText);
+
+            textBox.Text = mts.MessageText;
+
+        }
 
 
     }

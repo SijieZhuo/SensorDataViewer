@@ -15,7 +15,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <StackPanel x:Name="sp" HorizontalAlignment="Left" Height="187" Margin="32,72,0,0" VerticalAlignment="Top" Width="102" Background="#FFE1E1E1"/>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="25" Margin="0,395,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="793" RenderTransformOrigin="0.493,0.363"/>
         <Button x:Name="BTSearchBtn" Content="Bluetooth" HorizontalAlignment="Left" Margin="32,30,0,0" VerticalAlignment="Top" Width="75" Click="BTSearchBtn_Click"/>
         
@@ -25,6 +24,9 @@
         TitleText="Shimmer" TitleFontFamily="Verdana" TitleFontSize="16"
         LegendOrientation="Vertical" Margin="165,10,90.333,114.667">
         </rtchart:RealTimeChart>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="32,55,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="shimmerBtn" Content="Connect" HorizontalAlignment="Left" Margin="32,124,0,0" VerticalAlignment="Top" Width="75" Click="Shimmer_Click"/>
+        <Label x:Name="label" Content="Shimmer Device :" HorizontalAlignment="Left" Margin="32,93,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
     
 </Window>
