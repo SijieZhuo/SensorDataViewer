@@ -38,15 +38,18 @@ namespace stressProject
 
         private MessageTransferStation mts;
 
-
-
         int clusterSize = 1;
         int currCount = 0;
 
 
+        bool shimmerOn = false;
+        ShimmerSensor sensor;
+        RealTimeChart shimmerChart;
+
+
+
+
         Series series1 = null;
-
-
 
 
         public MainWindow()
@@ -56,9 +59,14 @@ namespace stressProject
             shimmerBtn.IsEnabled = false;
 
             mts = MessageTransferStation.Instance;
-            chartSetup();
-
+            shimmerChart = new RealTimeChart();
+            RealTimechartSetup(shimmerChart);
+            
+            sp.Children.Add(shimmerChart);
+            
         }
+
+
 
         private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -118,52 +126,57 @@ namespace stressProject
 
 
 
-        private void chartSetup()
+        private void RealTimechartSetup(RealTimeChart chart)
         {
-            chart1.FastScrollMode = true;
+            chart.Width = 500;
+            chart.Height = 300;
+            chart.FastScrollMode = true;
+            chart.TitleText = "Shimmer";
 
-            chart1.TooltipVisibility = Visibility.Visible;
-            chart1.ShowFallbackTooltip = true;
+            chart.TooltipVisibility = Visibility.Visible;
+            chart.ShowFallbackTooltip = true;
 
-            chart1.XAxis.Title = "Time";
-            chart1.XAxis.PinLabels = false;
-            chart1.XAxis.Length = 10;
-            chart1.XAxis.Interval = 1;
+            chart.XAxis.Title = "Time";
+            chart.XAxis.PinLabels = false;
+            chart.XAxis.Length = 10;
+            chart.XAxis.Interval = 1;
 
 
             Axis yAxis = new Axis();
             yAxis.Origin = 0;
             yAxis.Length = 2000;
             yAxis.Interval = 200;
-            yAxis.Title = "Server1";
+            yAxis.Title = "GSR";
             yAxis.TitleRotationAngle = -90.0;
             yAxis.TitleFontFamily = new FontFamily("Verdana");
             yAxis.LabelFontFamily = new FontFamily("Verdana");
             yAxis.TickLength = 5;
             yAxis.TitleOffset = 10;
-            chart1.YAxisCollection.Add(yAxis);
+            chart.YAxisCollection.Add(yAxis);
 
 
-            series1 = new Series(chart1.YAxisCollection[0])
+            series1 = new Series(chart.YAxisCollection[0])
             {
                 Stroke = new SolidColorBrush(Color.FromRgb(166, 46, 68)),
-                Title = "Server 1",
+                Title = "GSR",
                 ScatterType = ScatterType.None,
                 TitleFontFamily = new FontFamily("Verdana"),
                 TitleFontSize = 12
 
             };
 
-            chart1.SeriesCollection.Add(series1);
+            chart.SeriesCollection.Add(series1);
 
-            chart1.TooltipAxis = chart1.YAxisCollection[0];
+            chart.TooltipAxis = chart.YAxisCollection[0];
 
         }
 
         private void DisposeOldData(Series series)
         {
+            
+
             if (series.Data.Count > 500 &&
-                series.Data[499].X < chart1.XAxis.Origin)
+                series.Data[499].X < shimmerChart.XAxis.Origin)
                 series.Data.RemoveRange(0, 500);
         }
 
@@ -181,25 +194,45 @@ namespace stressProject
         {
             Debug.WriteLine(comboBox.SelectedItem.ToString());
 
-            if (checkShimmer(comboBox.SelectedItem.ToString()))
+            if (!shimmerOn)
             {
-                mts.MessageText = "pairing device";
-                Debug.WriteLine("mainwindow" + Thread.CurrentThread.ManagedThreadId);
+                shimmerOn = true;
+                shimmerBtn.IsEnabled = false;
+                if (checkShimmer(comboBox.SelectedItem.ToString()))
+                {
+                    mts.MessageText = "pairing device";
+                    Debug.WriteLine("mainwindow" + Thread.CurrentThread.ManagedThreadId);
 
-                ShimmerSensor sensor = new ShimmerSensor(BTmap[comboBox.SelectedItem.ToString()]);
-                Debug.WriteLine("object created");
-                new Thread(sensor.setup).Start();
+                    sensor = new ShimmerSensor(BTmap[comboBox.SelectedItem.ToString()]);
+                    Debug.WriteLine("object created");
+                    new Thread(sensor.setup).Start();
+                    shimmerBtn.IsEnabled = true;
+                    shimmerBtn.Content = "Dicconnect";
 
+                }
+                else
+                {
+                    mts.MessageText = "the device you trying to connect is not a shimmer sensor";
+                }
             }
             else
             {
-                mts.MessageText = "the device you trying to connect is not a shimmer sensor";
+                shimmerOn = false;
+                if (sensor != null)
+                {
+                    sensor.disconnect();
+                    shimmerBtn.Content = "Connect";
+                    sp.Children.Remove(shimmerChart);
+                    shimmerChart = new RealTimeChart();
+                    RealTimechartSetup(shimmerChart);
+                    sp.Children.Add(shimmerChart);
+                }
             }
         }
 
         public void updateShimmerChart(Tuple<SensorData, TimeSpan> data)
         {
-            chart1.FastScrollMode = true;
+            shimmerChart.FastScrollMode = true;
             Point[] points1 = new Point[clusterSize];
 
             double minNewX = currCount - 2000;
@@ -209,7 +242,7 @@ namespace stressProject
             Debug.WriteLine(currCount + "  " + data.Item2.TotalSeconds);
             series1.Data.AddRange(points1);
 
-            chart1.Commit();
+            shimmerChart.Commit();
 
             DisposeOldData(series1);
 
@@ -225,7 +258,10 @@ namespace stressProject
 
         }
 
-
+        private void recordBtn_Click(object sender, RoutedEventArgs e)
+        {
+            mts.writeShimmerData();
+        }
     }
 
 }

@@ -46,6 +46,8 @@ namespace stressProject
             {
 
                 shimmer.WriteSensors(enabledSensors);
+                updateMessage("Shimmer device is connected");
+               
                 shimmer.StartStreaming();
                 stopwatch.Start();
 
@@ -115,9 +117,12 @@ namespace stressProject
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                //mts.shimmerData.Add(data);
                 mts.Data = data;
             });
+        }
+
+        public void disconnect() {
+            shimmer.Disconnect();
         }
 
 
