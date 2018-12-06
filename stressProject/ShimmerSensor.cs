@@ -36,7 +36,7 @@ namespace stressProject
 
             //shimmer = new Shimmer32Feet("ShimmerID1", "00:06:66:66:96:86");
             //devName,bluetoothAddress, samplingRate, accelRange, gsrRange, setEnabledSensors, enableLowPowerAccel, enableLowPowerGyro, enableLowPowerMag, gyroRange, magRange, exg1configuration, exg2configuration, internalexppower
-            shimmer = new ShimmerLogAndStream32Feet("ShimmerID1", address, 51.2, 0, ShimmerBluetooth.GSR_RANGE_AUTO, enabledSensors, true, false, false, 1, 0, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP1, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP2, true);
+            shimmer = new ShimmerLogAndStream32Feet("ShimmerID1", address, 10, 0, ShimmerBluetooth.GSR_RANGE_AUTO, enabledSensors, true, false, false, 1, 0, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP1, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP2, true);
 
             shimmer.UICallback += this.HandleEvent;
 
