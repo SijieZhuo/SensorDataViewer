@@ -24,6 +24,7 @@
             <StackPanel x:Name="sp" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="592" RenderTransformOrigin="0.485,0.524"/>
         </ScrollViewer>
         <Button x:Name="recordBtn" Content="record" HorizontalAlignment="Left" Margin="32,175,0,0" VerticalAlignment="Top" Width="75" Click="recordBtn_Click"/>
+        <Button x:Name="phoneBTBtn" Content="phone" HorizontalAlignment="Left" Height="23" Margin="32,225,0,0" VerticalAlignment="Top" Width="89" Click="phoneBTBtn_Click"/>
     </Grid>
 
 </Window>

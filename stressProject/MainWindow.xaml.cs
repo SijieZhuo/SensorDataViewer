@@ -25,6 +25,8 @@ using System.Diagnostics;
 
 using MindFusion.RealTimeCharting.Wpf;
 using System.Windows.Threading;
+using InTheHand.Net;
+using System.IO;
 
 namespace stressProject
 {
@@ -46,8 +48,9 @@ namespace stressProject
         ShimmerSensor sensor;
         RealTimeChart shimmerChart;
 
+        BluetoothListener BTListener;
 
-
+        Guid guid = new Guid("6bfc8497-b445-406e-b639-a5abaf4d9739");
 
         Series series1 = null;
 
@@ -61,9 +64,16 @@ namespace stressProject
             mts = MessageTransferStation.Instance;
             shimmerChart = new RealTimeChart();
             RealTimechartSetup(shimmerChart);
-            
+
             sp.Children.Add(shimmerChart);
-            
+
+
+
+
+
+
+
+
         }
 
 
@@ -123,7 +133,13 @@ namespace stressProject
             shimmerBtn.IsEnabled = true;
         }
 
+        public void updateTextBox()
+        {
+            Debug.WriteLine(mts.MessageText);
 
+            textBox.Text = mts.MessageText;
+
+        }
 
 
         private void RealTimechartSetup(RealTimeChart chart)
@@ -173,7 +189,7 @@ namespace stressProject
 
         private void DisposeOldData(Series series)
         {
-            
+
 
             if (series.Data.Count > 500 &&
                 series.Data[499].X < shimmerChart.XAxis.Origin)
@@ -250,18 +266,68 @@ namespace stressProject
 
         }
 
-        public void updateTextBox()
-        {
-            Debug.WriteLine(mts.MessageText);
 
-            textBox.Text = mts.MessageText;
-
-        }
 
         private void recordBtn_Click(object sender, RoutedEventArgs e)
         {
             mts.writeShimmerData();
         }
+
+        private void phoneBTBtn_Click(object sender, RoutedEventArgs e)
+        {
+            /*Debug.WriteLine(BTmap[comboBox.SelectedItem.ToString()]);
+            BluetoothAddress address = BluetoothAddress.Parse("786256C7CF9E");
+            //uuid : 6bfc8497-b445-406e-b639-a5abaf4d9739
+            var client = new BluetoothClient();
+            var btEndPoint = new BluetoothEndPoint(address, guid);
+            client.Connect(btEndPoint);
+            Debug.WriteLine(client.Connected);*/
+
+            new Thread(ListeningBT).Start();
+
+        }
+
+
+        private void ListeningBT()
+        {
+            BTListener = new BluetoothListener(guid);
+            BTListener.Start();
+            BluetoothClient client = BTListener.AcceptBluetoothClient();
+
+            bool connected = true;
+            Stream mStream = client.GetStream();
+            Debug.WriteLine(client.Connected + "1");
+            while (connected)
+            {
+                //Debug.WriteLine(client.Connected);
+                try
+                {
+                    //Debug.WriteLine("waiting");
+                    byte[] received = new byte[1024];
+                    mStream.Read(received, 0, received.Length);
+                    char[] charArray = Encoding.UTF8.GetString(received).ToCharArray();
+                    string s = Encoding.UTF8.GetString(received, 0, received.Length);
+                    StringBuilder receivedString = new StringBuilder();
+                    foreach (byte b in received) {
+                        receivedString.AppendFormat("{0}",received);
+                    }
+                    Debug.WriteLine("received : " + s);
+
+                    //updateUI("Received: " + receivedString);
+                    //handleBluetoothInput(receivedString);
+                    //byte[] send = Encoding.ASCII.GetBytes("Hello world");
+                    //mStream.Write(send, 0, send.Length);
+                }
+                catch (IOException e)
+                {
+                    connected = false;
+                    //updateUI("Client disconnected");
+                    //disconnectBluetooth();
+                }
+            }
+        }
+
+
     }
 
 }
