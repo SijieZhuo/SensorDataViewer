@@ -20,9 +20,21 @@
         <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="32,55,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="shimmerBtn" Content="Connect" HorizontalAlignment="Left" Margin="32,124,0,0" VerticalAlignment="Top" Width="75" Click="Shimmer_Click"/>
         <Label x:Name="label" Content="Shimmer Device :" HorizontalAlignment="Left" Margin="32,93,0,0" VerticalAlignment="Top" Width="120"/>
-        <ScrollViewer HorizontalAlignment="Left" Height="385" Margin="165,10,0,0" VerticalAlignment="Top" Width="618">
-            <StackPanel x:Name="sp" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="592" RenderTransformOrigin="0.485,0.524"/>
-        </ScrollViewer>
+        <TabControl x:Name="tabControl" Margin="165,10,10.333,30.667">
+            <TabItem Header="Shimmer">
+                <Grid Background="#FFE5E5E5">
+                    <ScrollViewer HorizontalAlignment="Left" Height="352" VerticalAlignment="Top" Width="612" RenderTransformOrigin="-0.223,0.262">
+                        <StackPanel x:Name="sp" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="592" RenderTransformOrigin="0.485,0.524"/>
+                    </ScrollViewer>
+                </Grid>
+
+
+            </TabItem>
+            <TabItem Header="Phone">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
         <Button x:Name="recordBtn" Content="record" HorizontalAlignment="Left" Margin="32,175,0,0" VerticalAlignment="Top" Width="75" Click="recordBtn_Click"/>
         <Button x:Name="phoneBTBtn" Content="phone" HorizontalAlignment="Left" Height="23" Margin="32,225,0,0" VerticalAlignment="Top" Width="89" Click="phoneBTBtn_Click"/>
     </Grid>

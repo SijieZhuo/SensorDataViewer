@@ -105,7 +105,9 @@
     </ApplicationDefinition>
     <Compile Include="DateModel.cs" />
     <Compile Include="MessageTransferStation.cs" />
+    <Compile Include="PhoneSensor.cs" />
     <Compile Include="ShimmerSensor.cs" />
+    <Compile Include="TimeChart.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

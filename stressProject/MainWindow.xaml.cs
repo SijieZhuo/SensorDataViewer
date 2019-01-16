@@ -46,14 +46,20 @@ namespace stressProject
 
         bool shimmerOn = false;
         ShimmerSensor sensor;
+        PhoneSensor phoneSensor;
         RealTimeChart shimmerChart;
+        public TimeChart timeChart;
+
 
         BluetoothListener BTListener;
 
-        Guid guid = new Guid("6bfc8497-b445-406e-b639-a5abaf4d9739");
+        public TimeChart GetTimeChart() {
+            return timeChart;
+        }
 
         Series series1 = null;
 
+        
 
         public MainWindow()
         {
@@ -62,10 +68,13 @@ namespace stressProject
             shimmerBtn.IsEnabled = false;
 
             mts = MessageTransferStation.Instance;
-            shimmerChart = new RealTimeChart();
-            RealTimechartSetup(shimmerChart);
+            //shimmerChart = new RealTimeChart();
+            // RealTimechartSetup(shimmerChart);
 
-            sp.Children.Add(shimmerChart);
+            //sp.Children.Add(shimmerChart);
+
+            timeChart = new TimeChart("Shimmer111", "GSR", 0, 2000, 200);
+            sp.Children.Add(timeChart.GetTimeChart());
 
 
 
@@ -142,63 +151,10 @@ namespace stressProject
         }
 
 
-        private void RealTimechartSetup(RealTimeChart chart)
-        {
-            chart.Width = 500;
-            chart.Height = 300;
-            chart.FastScrollMode = true;
-            chart.TitleText = "Shimmer";
 
-            chart.TooltipVisibility = Visibility.Visible;
-            chart.ShowFallbackTooltip = true;
+       
 
-            chart.XAxis.Title = "Time";
-            chart.XAxis.PinLabels = false;
-            chart.XAxis.Length = 10;
-            chart.XAxis.Interval = 1;
-
-
-            Axis yAxis = new Axis();
-            yAxis.Origin = 0;
-            yAxis.Length = 2000;
-            yAxis.Interval = 200;
-            yAxis.Title = "GSR";
-            yAxis.TitleRotationAngle = -90.0;
-            yAxis.TitleFontFamily = new FontFamily("Verdana");
-            yAxis.LabelFontFamily = new FontFamily("Verdana");
-            yAxis.TickLength = 5;
-            yAxis.TitleOffset = 10;
-            chart.YAxisCollection.Add(yAxis);
-
-
-            series1 = new Series(chart.YAxisCollection[0])
-            {
-                Stroke = new SolidColorBrush(Color.FromRgb(166, 46, 68)),
-                Title = "GSR",
-                ScatterType = ScatterType.None,
-                TitleFontFamily = new FontFamily("Verdana"),
-                TitleFontSize = 12
-
-            };
-
-            chart.SeriesCollection.Add(series1);
-
-            chart.TooltipAxis = chart.YAxisCollection[0];
-
-        }
-
-        private void DisposeOldData(Series series)
-        {
-
-
-            if (series.Data.Count > 500 &&
-                series.Data[499].X < shimmerChart.XAxis.Origin)
-                series.Data.RemoveRange(0, 500);
-        }
-
-
-
-
+        
 
         private bool checkShimmer(string name)
         {
@@ -238,35 +194,16 @@ namespace stressProject
                 {
                     sensor.disconnect();
                     shimmerBtn.Content = "Connect";
-                    sp.Children.Remove(shimmerChart);
-                    shimmerChart = new RealTimeChart();
-                    RealTimechartSetup(shimmerChart);
-                    sp.Children.Add(shimmerChart);
+                    //sp.Children.Remove(shimmerChart);
+                     timeChart = new TimeChart("Shimmer","GSR",0,2000,200);
+                    //shimmerChart = new RealTimeChart();
+                    //RealTimechartSetup(shimmerChart);
+                    sp.Children.Add(timeChart.GetTimeChart());
                 }
             }
         }
 
-        public void updateShimmerChart(Tuple<SensorData, TimeSpan> data)
-        {
-            shimmerChart.FastScrollMode = true;
-            Point[] points1 = new Point[clusterSize];
-
-            double minNewX = currCount - 2000;
-
-            points1[0] = new Point(data.Item2.TotalSeconds, data.Item1.Data);
-            currCount++;
-            Debug.WriteLine(currCount + "  " + data.Item2.TotalSeconds);
-            series1.Data.AddRange(points1);
-
-            shimmerChart.Commit();
-
-            DisposeOldData(series1);
-
-
-
-        }
-
-
+        
 
         private void recordBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -275,57 +212,14 @@ namespace stressProject
 
         private void phoneBTBtn_Click(object sender, RoutedEventArgs e)
         {
-            /*Debug.WriteLine(BTmap[comboBox.SelectedItem.ToString()]);
-            BluetoothAddress address = BluetoothAddress.Parse("786256C7CF9E");
-            //uuid : 6bfc8497-b445-406e-b639-a5abaf4d9739
-            var client = new BluetoothClient();
-            var btEndPoint = new BluetoothEndPoint(address, guid);
-            client.Connect(btEndPoint);
-            Debug.WriteLine(client.Connected);*/
 
-            new Thread(ListeningBT).Start();
+            phoneSensor = new PhoneSensor();
+
+            new Thread(phoneSensor.PhoneConnection).Start();
 
         }
 
 
-        private void ListeningBT()
-        {
-            BTListener = new BluetoothListener(guid);
-            BTListener.Start();
-            BluetoothClient client = BTListener.AcceptBluetoothClient();
-
-            bool connected = true;
-            Stream mStream = client.GetStream();
-            Debug.WriteLine(client.Connected + "1");
-            while (connected)
-            {
-                //Debug.WriteLine(client.Connected);
-                try
-                {
-                    //Debug.WriteLine("waiting");
-                    byte[] received = new byte[1024];
-                    mStream.Read(received, 0, received.Length);
-                    char[] charArray = Encoding.UTF8.GetString(received).ToCharArray();
-                    string s = Encoding.UTF8.GetString(received, 0, received.Length);
-                    StringBuilder receivedString = new StringBuilder();
-                    foreach (byte b in received) {
-                        receivedString.AppendFormat("{0}",received);
-                    }
-                    Debug.WriteLine("received : " + s);
-
-                    //updateUI("Received: " + receivedString);
-                    //handleBluetoothInput(receivedString);
-                    //byte[] send = Encoding.ASCII.GetBytes("Hello world");
-                    //mStream.Write(send, 0, send.Length);
-                }
-                catch (IOException e)
-                {
-                    connected = false;
-                    //updateUI("Client disconnected");
-                    //disconnectBluetooth();
-                }
-            }
-        }
 
 
     }

@@ -24,6 +24,11 @@ namespace stressProject
         private MainWindow mw;
         public Tuple<SensorData, TimeSpan> _data;
         public List<Tuple<SensorData, TimeSpan>> shimmerData;
+        public List<string[]> phoneData;
+
+        
+
+        Guid guid = new Guid("6bfc8497-b445-406e-b639-a5abaf4d9739");
 
 
         public static MessageTransferStation instance;
@@ -58,7 +63,8 @@ namespace stressProject
                 _data = value;
                 OnPropertyChanged("Data");
 
-                mw.updateShimmerChart(_data);
+                //mw.updateShimmerChart(_data);
+                mw.timeChart.updateShimmerChart(_data.Item2.TotalSeconds,_data.Item1.Data);
                 shimmerData.Add(_data);
 
             }
@@ -129,6 +135,20 @@ namespace stressProject
                 Time = t;
                 Data = d;
             }
+        }
+
+
+
+
+
+
+
+
+
+
+        public Guid GetGuid()
+        {
+            return guid;
         }
     }
 }
