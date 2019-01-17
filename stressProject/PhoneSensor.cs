@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace stressProject
 {
@@ -51,6 +52,7 @@ namespace stressProject
                 string s = Encoding.UTF8.GetString(received, 0, received.Length);
 
                 string[] phoneData = s.Split(',');
+                updateData(new Tuple<double, string[]>(mts.getTime(),phoneData));
 
 
                 Debug.WriteLine("received : " + s);
@@ -62,6 +64,15 @@ namespace stressProject
 
             }
         }
+
+
+         private void updateData(Tuple<double, string[]> data)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                 {
+                   mts.PData = data;
+               });
+           }
 
 
     }

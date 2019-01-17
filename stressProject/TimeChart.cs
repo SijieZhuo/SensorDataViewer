@@ -16,16 +16,18 @@ namespace stressProject
         int currCount = 0;
 
         string title, yTitle;
-        int yOrigin, yLength, yInterval;
+        int yOrigin, yLength, yInterval, width, height;
 
         RealTimeChart chart;
 
-        public TimeChart(string title, string yTitle, int yOrigin, int yLength, int yInterval) {
+        public TimeChart(int width, int height, string title, string yTitle, int yOrigin, int yLength, int yInterval) {
             this.title = title;
             this.yTitle = yTitle;
             this.yOrigin = yOrigin;
             this.yLength = yLength;
             this.yInterval = yInterval;
+            this.width = width;
+            this.height = height;
 
             TimeChartSetUp();
         }
@@ -33,8 +35,8 @@ namespace stressProject
 
         public void TimeChartSetUp() {
             chart = new RealTimeChart();
-            chart.Width = 500;
-            chart.Height = 300;
+            chart.Width = width;
+            chart.Height = height;
             chart.FastScrollMode = true;
             chart.TitleText = title;
 
@@ -84,7 +86,7 @@ namespace stressProject
             chart.FastScrollMode = true;
             Point[] points1 = new Point[clusterSize];
 
-            double minNewX = currCount - 2000;
+            double minNewX = currCount- 2000;
 
             points1[0] = new Point(x, y);
             currCount++;

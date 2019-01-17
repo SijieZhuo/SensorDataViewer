@@ -40,24 +40,23 @@ namespace stressProject
 
         private MessageTransferStation mts;
 
-        int clusterSize = 1;
-        int currCount = 0;
-
 
         bool shimmerOn = false;
         ShimmerSensor sensor;
         PhoneSensor phoneSensor;
         RealTimeChart shimmerChart;
         public TimeChart timeChart;
+        public TimeChart pChart;
 
 
-        BluetoothListener BTListener;
+
+
 
         public TimeChart GetTimeChart() {
             return timeChart;
         }
 
-        Series series1 = null;
+     
 
         
 
@@ -73,8 +72,11 @@ namespace stressProject
 
             //sp.Children.Add(shimmerChart);
 
-            timeChart = new TimeChart("Shimmer111", "GSR", 0, 2000, 200);
+            timeChart = new TimeChart(500,300,"Shimmer", "GSR", 0, 2000, 200);
             sp.Children.Add(timeChart.GetTimeChart());
+
+            pChart = new TimeChart(500,300,"sound", "db", 0, 150, 15);
+            sp2.Children.Add(pChart.GetTimeChart());
 
 
 
@@ -195,7 +197,7 @@ namespace stressProject
                     sensor.disconnect();
                     shimmerBtn.Content = "Connect";
                     //sp.Children.Remove(shimmerChart);
-                     timeChart = new TimeChart("Shimmer","GSR",0,2000,200);
+                     timeChart = new TimeChart(500,300,"Shimmer","GSR",0,2000,200);
                     //shimmerChart = new RealTimeChart();
                     //RealTimechartSetup(shimmerChart);
                     sp.Children.Add(timeChart.GetTimeChart());
@@ -219,7 +221,7 @@ namespace stressProject
 
         }
 
-
+        
 
 
     }

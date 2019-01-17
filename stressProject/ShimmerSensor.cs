@@ -16,7 +16,7 @@ namespace stressProject
 
         private string address;
         private MessageTransferStation mts;
-        Stopwatch stopwatch;
+        
 
 
 
@@ -24,7 +24,7 @@ namespace stressProject
         {
             address = BTaddress;
             mts = MessageTransferStation.Instance;
-            stopwatch = new Stopwatch();
+
 
         }
 
@@ -49,7 +49,6 @@ namespace stressProject
                 updateMessage("Shimmer device is connected");
                
                 shimmer.StartStreaming();
-                stopwatch.Start();
 
 
             }
@@ -86,12 +85,24 @@ namespace stressProject
                     break;
                 case (int)ShimmerBluetooth.ShimmerIdentifier.MSG_IDENTIFIER_DATA_PACKET:
                     ObjectCluster objectCluster = (ObjectCluster)eventArgs.getObject();
-                    SensorData data = objectCluster.GetData("GSR", "CAL");
-                   // SensorData time = objectCluster.GetData("Timestamp","CAL");
-                    TimeSpan time = stopwatch.Elapsed;
+                    //List<string> s= objectCluster.GetNames();
+                    //foreach (string st in s) {
+                    //    Debug.WriteLine(st);
+                    //}
+                    SensorData GSRdata = objectCluster.GetData("GSR", "CAL");
+                    SensorData AccX = objectCluster.GetData("Low Noise Accelerometer X", "CAL");
+                    SensorData AccY = objectCluster.GetData("Low Noise Accelerometer Y", "CAL");
+                    SensorData AccZ = objectCluster.GetData("Low Noise Accelerometer Z", "CAL");
+
+                    //TimeSpan time = stopwatch.Elapsed;
+
+                    //double time = DateTime.Now.ToOADate();
+                    double time = mts.getTime();
+
+                    SensorData[] data = { GSRdata, AccX, AccY, AccZ };
                     //Debug.WriteLine(time.GetType());
 
-                    Tuple<SensorData, TimeSpan> dataTuple = new Tuple<SensorData, TimeSpan>(data,time);
+                    Tuple<double, SensorData[]> dataTuple = new Tuple<double, SensorData[]>(time, data);
                     //objectCluster.GetNames
 
                     
@@ -113,11 +124,11 @@ namespace stressProject
         }
 
 
-        private void updateData(Tuple<SensorData,TimeSpan> data)
+        private void updateData(Tuple<double, SensorData[]> data)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                mts.Data = data;
+                mts.SData = data;
             });
         }
 
