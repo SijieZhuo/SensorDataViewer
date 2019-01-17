@@ -26,6 +26,7 @@ namespace stressProject
         public Tuple<double, string[]> phoneData;
         public List<Tuple<double, SensorData[]>> shimmerDataList;
         public List<string[]> phoneDataList;
+        public string RootDirectory = Directory.GetCurrentDirectory();
 
         private readonly BackgroundWorker worker = new BackgroundWorker();
 
@@ -113,10 +114,10 @@ namespace stressProject
         }
 
 
-        public void writeShimmerData()
+        public void writeShimmerData(string fileName)
         {
             var records = new List<object>();
-            StreamWriter sw = new StreamWriter("output.csv");
+            StreamWriter sw = new StreamWriter("Records\\"+fileName+".csv");
             var csv = new CsvWriter(sw);
 
             worker.DoWork += worker_DoWork;

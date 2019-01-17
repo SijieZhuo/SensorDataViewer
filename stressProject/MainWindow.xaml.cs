@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.ComponentModel;
 using System.Diagnostics;
+using Microsoft.VisualBasic;
 
 
 
@@ -52,13 +53,14 @@ namespace stressProject
 
 
 
-        public TimeChart GetTimeChart() {
+        public TimeChart GetTimeChart()
+        {
             return timeChart;
         }
 
-     
 
-        
+
+
 
         public MainWindow()
         {
@@ -72,15 +74,16 @@ namespace stressProject
 
             //sp.Children.Add(shimmerChart);
 
-            timeChart = new TimeChart(500,300,"Shimmer", "GSR", 0, 2000, 200);
+            timeChart = new TimeChart(500, 300, "Shimmer", "GSR", 0, 2000, 200);
             sp.Children.Add(timeChart.GetTimeChart());
 
-            pChart = new TimeChart(500,300,"sound", "db", 0, 150, 15);
+            pChart = new TimeChart(500, 300, "sound", "db", 0, 150, 15);
             sp2.Children.Add(pChart.GetTimeChart());
 
 
 
 
+            Directory.CreateDirectory(mts.RootDirectory + "\\Records");
 
 
 
@@ -154,9 +157,9 @@ namespace stressProject
 
 
 
-       
 
-        
+
+
 
         private bool checkShimmer(string name)
         {
@@ -197,7 +200,7 @@ namespace stressProject
                     sensor.disconnect();
                     shimmerBtn.Content = "Connect";
                     //sp.Children.Remove(shimmerChart);
-                     timeChart = new TimeChart(500,300,"Shimmer","GSR",0,2000,200);
+                    timeChart = new TimeChart(500, 300, "Shimmer", "GSR", 0, 2000, 200);
                     //shimmerChart = new RealTimeChart();
                     //RealTimechartSetup(shimmerChart);
                     sp.Children.Add(timeChart.GetTimeChart());
@@ -205,11 +208,22 @@ namespace stressProject
             }
         }
 
-        
+
 
         private void recordBtn_Click(object sender, RoutedEventArgs e)
         {
-            mts.writeShimmerData();
+            //string s = Interaction.InputBox("Question?", "Title", "Default Text");
+            //Debug.WriteLine(s);
+            //mts.writeShimmerData();
+            TabItem selected = (TabItem)tabControl.SelectedItem;
+            Debug.WriteLine(selected.Header);
+
+            RecordPopup popup = new RecordPopup(selected.Header.ToString());
+            popup.Show();
+
+
+
+
         }
 
         private void phoneBTBtn_Click(object sender, RoutedEventArgs e)
@@ -221,7 +235,7 @@ namespace stressProject
 
         }
 
-        
+
 
 
     }

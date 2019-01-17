@@ -87,7 +87,7 @@ namespace stressProject
             Point[] points1 = new Point[clusterSize];
 
             double minNewX = currCount- 2000;
-
+            
             points1[0] = new Point(x, y);
             currCount++;
             Debug.WriteLine(currCount + "  " + x);
