@@ -28,7 +28,6 @@ namespace stressProject
         public List<string[]> phoneDataList;
         public string RootDirectory = Directory.GetCurrentDirectory();
 
-        private readonly BackgroundWorker worker = new BackgroundWorker();
 
         Stopwatch stopwatch;
 
@@ -90,14 +89,15 @@ namespace stressProject
                 //mw.updateShimmerChart(_data);
                 mw.pChart.updateShimmerChart(phoneData.Item1, Int32.Parse(data[0]));
                 mw.AccX.Content = "Acc X: " + data[1];
-                mw.AccX.Content = "Acc Y: " + data[2];
-                mw.AccX.Content = "Acc Z: " + data[3];
-                mw.AccX.Content = "Rot X: " + data[4];
-                mw.AccX.Content = "Rot Y: " + data[5];
-                mw.AccX.Content = "Rot Z: " + data[6];
-                mw.AccX.Content = "Gra X: " + data[7];
-                mw.AccX.Content = "Gra Y: " + data[8];
-                mw.AccX.Content = "Gra Z: " + data[9];
+                mw.AccY.Content = "Acc Y: " + data[2];
+                mw.AccZ.Content = "Acc Z: " + data[3];
+                mw.RotX.Content = "Rot X: " + data[4];
+                mw.RotY.Content = "Rot Y: " + data[5];
+                mw.RotZ.Content = "Rot Z: " + data[6];
+                mw.GraX.Content = "Gra X: " + data[7];
+                mw.GraY.Content = "Gra Y: " + data[8];
+                mw.GraZ.Content = "Gra Z: " + data[9];
+                mw.currentApp.Content = "Current App: " + data[10];
                 //shimmerDataList.Add(shimmerData);
 
             }
@@ -120,30 +120,18 @@ namespace stressProject
             StreamWriter sw = new StreamWriter("Records\\"+fileName+".csv");
             var csv = new CsvWriter(sw);
 
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
-
-            worker.RunWorkerAsync();
-
             foreach (Tuple<double, SensorData[]> tuple in shimmerDataList)
             {
                 dynamic record = new ExpandoObject();
                  record.Time = tuple.Item1;
                 record.GSR = tuple.Item2[0].Data;
-                //records.Clear();
-                //records.Add(record);
                 OutputSdata s = new OutputSdata(tuple.Item1, tuple.Item2[0].Data);
-                //Tuple<double, double> d = new Tuple<double, double>(tuple.Item2.TotalSeconds,tuple.Item1.Data);
                 
                 records.Add(s);
-                //Debug.WriteLine(d);
-                //csv.WriteRecords(records);
-                
 
 
             }
             Debug.WriteLine(records.Count());
-            //csv.WriteRecords(records);
 
             Thread thread = new Thread(() => Write(csv, records));
             thread.Start();
@@ -156,16 +144,6 @@ namespace stressProject
         }
 
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // run all background tasks here
-        }
-
-        private void worker_RunWorkerCompleted(object sender,
-                                               RunWorkerCompletedEventArgs e)
-        {
-            //update ui once worker complete his work
-        }
 
 
 

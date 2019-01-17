@@ -39,11 +39,12 @@ namespace stressProject
             Debug.WriteLine(client.Connected + "1");
             while (connected)
             {
-                ReceivingData(mStream);               
+                ReceivingData(mStream);
             }
         }
 
-        private void ReceivingData(Stream mStream) {
+        private void ReceivingData(Stream mStream)
+        {
             try
             {
                 byte[] received = new byte[1024];
@@ -52,10 +53,20 @@ namespace stressProject
                 string s = Encoding.UTF8.GetString(received, 0, received.Length);
 
                 string[] phoneData = s.Split(',');
-                updateData(new Tuple<double, string[]>(mts.getTime(),phoneData));
+                Debug.WriteLine("phone data length: " + phoneData.Count());
+                if (phoneData.Count() == 11)
+                {
+                    updateData(new Tuple<double, string[]>(mts.getTime(), phoneData));
+                }
+                else if (phoneData.Count() == 7)
+                {
+                    Debug.WriteLine("touch: " + s);
+                }
 
 
-                Debug.WriteLine("received : " + s);
+
+
+                //Debug.WriteLine("received : " + s);
                 Debug.WriteLine("");
             }
             catch (IOException e)
@@ -66,13 +77,14 @@ namespace stressProject
         }
 
 
-         private void updateData(Tuple<double, string[]> data)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                 {
-                   mts.PData = data;
-               });
-           }
+        private void updateData(Tuple<double, string[]> data)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+             {
+                 mts.PData = data;
+             });
+        }
+
 
 
     }

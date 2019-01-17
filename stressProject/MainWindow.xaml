@@ -38,20 +38,21 @@
                     </Grid.ColumnDefinitions>
                     <ScrollViewer HorizontalAlignment="Center" Height="352" VerticalAlignment="Center" Width="612" RenderTransformOrigin="-0.223,0.262" Grid.ColumnSpan="2">
                         <StackPanel x:Name="sp2" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="586" RenderTransformOrigin="0.485,0.524">
-                            <Grid x:Name="dataGrid" HorizontalAlignment="Center" Height="159" Margin="10,10,0,0" VerticalAlignment="Center" Width="574" Grid.Row="3" Grid.Column="3">
+                            <Grid x:Name="dataGrid" HorizontalAlignment="Center" Height="189" Margin="11,10,1,0" VerticalAlignment="Center" Width="574" Grid.Row="3" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="313*"/>
                                     <ColumnDefinition Width="261*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label x:Name="AccX" Content="Label" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
-                                <Label x:Name="AccY" Content="Label" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
-                                <Label x:Name="AccZ" Content="Label" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
-                                <Label x:Name="RotX" Content="Label" HorizontalAlignment="Left" Margin="188,0,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
-                                <Label x:Name="RotY" Content="Label" HorizontalAlignment="Left" Margin="188,50,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
-                                <Label x:Name="RotZ" Content="Label" HorizontalAlignment="Left" Margin="188,95,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
-                                <Label x:Name="GraX" Content="Label" HorizontalAlignment="Left" Margin="51.667,5,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
-                                <Label x:Name="GraY" Content="Label" HorizontalAlignment="Left" Margin="51.667,55,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
-                                <Label x:Name="GraZ" Content="Label" HorizontalAlignment="Left" Margin="51.667,100,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
+                                <Label x:Name="AccX" Content="AccX: " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
+                                <Label x:Name="AccY" Content="AccY: " HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
+                                <Label x:Name="AccZ" Content="AccZ: " HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
+                                <Label x:Name="RotX" Content="RotX: " HorizontalAlignment="Left" Margin="188,0,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
+                                <Label x:Name="RotY" Content="RotY: " HorizontalAlignment="Left" Margin="188,50,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
+                                <Label x:Name="RotZ" Content="RotZ: " HorizontalAlignment="Left" Margin="188,95,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
+                                <Label x:Name="GraX" Content="GraX: " HorizontalAlignment="Left" Margin="51.667,5,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
+                                <Label x:Name="GraY" Content="GraY: " HorizontalAlignment="Left" Margin="51.667,55,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
+                                <Label x:Name="GraZ" Content="GraZ: " HorizontalAlignment="Left" Margin="51.667,100,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
+                                <Label x:Name="currentApp" Content="Current App: " HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Height="45" Width="441" Grid.ColumnSpan="2"/>
                             </Grid>
                         </StackPanel>
                     </ScrollViewer>
