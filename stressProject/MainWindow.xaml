@@ -36,23 +36,26 @@
                         <ColumnDefinition Width="0*"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <ScrollViewer HorizontalAlignment="Center" Height="352" VerticalAlignment="Center" Width="612" RenderTransformOrigin="-0.223,0.262" Grid.ColumnSpan="2">
+                    <ScrollViewer HorizontalAlignment="Center" Height="352" VerticalAlignment="Top" Width="612" RenderTransformOrigin="-0.223,0.262" Grid.ColumnSpan="2">
                         <StackPanel x:Name="sp2" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="586" RenderTransformOrigin="0.485,0.524">
-                            <Grid x:Name="dataGrid" HorizontalAlignment="Center" Height="189" Margin="11,10,1,0" VerticalAlignment="Center" Width="574" Grid.Row="3" Grid.Column="3">
+                            <Grid x:Name="dataGrid" HorizontalAlignment="Center" Height="188" Margin="11,10,1,0" VerticalAlignment="Center" Width="574" Grid.Row="3" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="313*"/>
                                     <ColumnDefinition Width="261*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label x:Name="AccX" Content="AccX: " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
-                                <Label x:Name="AccY" Content="AccY: " HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
-                                <Label x:Name="AccZ" Content="AccZ: " HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Height="45" Width="209"/>
-                                <Label x:Name="RotX" Content="RotX: " HorizontalAlignment="Left" Margin="188,0,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
-                                <Label x:Name="RotY" Content="RotY: " HorizontalAlignment="Left" Margin="188,50,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
-                                <Label x:Name="RotZ" Content="RotZ: " HorizontalAlignment="Left" Margin="188,95,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.ColumnSpan="2"/>
-                                <Label x:Name="GraX" Content="GraX: " HorizontalAlignment="Left" Margin="51.667,5,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
-                                <Label x:Name="GraY" Content="GraY: " HorizontalAlignment="Left" Margin="51.667,55,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
-                                <Label x:Name="GraZ" Content="GraZ: " HorizontalAlignment="Left" Margin="51.667,100,0,0" VerticalAlignment="Top" Height="45" Width="209" Grid.Column="1"/>
-                                <Label x:Name="currentApp" Content="Current App: " HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Height="45" Width="441" Grid.ColumnSpan="2"/>
+                                <Label x:Name="AccX" Content="AccX: " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="30" Width="150.4" FontSize="14"/>
+                                <Label x:Name="AccY" Content="AccY: " HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Height="30" Width="150.4" FontSize="14"/>
+                                <Label x:Name="AccZ" Content="AccZ: " HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Height="30" Width="150.4" FontSize="14"/>
+                                <Label x:Name="RotX" Content="RotX: " HorizontalAlignment="Left" Margin="163,0,0,0" VerticalAlignment="Top" Height="30" Width="150" FontSize="14"/>
+                                <Label x:Name="RotY" Content="RotY: " HorizontalAlignment="Left" Margin="163,30,0,0" VerticalAlignment="Top" Height="30" Width="150" FontSize="14"/>
+                                <Label x:Name="RotZ" Content="RotZ: " HorizontalAlignment="Left" Margin="163,60,0,0" VerticalAlignment="Top" Height="30" Width="150" FontSize="14"/>
+                                <Label x:Name="GraX" Content="GraX: " HorizontalAlignment="Left" Margin="4.667,0,0,0" VerticalAlignment="Top" Height="30" Width="150" Grid.Column="1" FontSize="14"/>
+                                <Label x:Name="GraY" Content="GraY: " HorizontalAlignment="Left" Margin="4.667,30,0,0" VerticalAlignment="Top" Height="30" Width="150" Grid.Column="1" FontSize="14"/>
+                                <Label x:Name="GraZ" Content="GraZ: " HorizontalAlignment="Left" Margin="4.667,60,0,0" VerticalAlignment="Top" Height="30" Width="150" Grid.Column="1" FontSize="14"/>
+                                <Label x:Name="currentApp" Content="Current App: " HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Height="30" Width="441" Grid.ColumnSpan="2" FontSize="14"/>
+                                <Label x:Name="ScreenStatus" Content="Screen Status: " HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" Height="30" Width="188" FontSize="14"/>
+                                <Label x:Name="Data_download" Content="Data Download: " HorizontalAlignment="Left" Margin="203,125,0,0" VerticalAlignment="Top" Height="30" Width="150" FontSize="14" Grid.ColumnSpan="2"/>
+                                <Label x:Name="Data_upload" Content="Data Upload: " HorizontalAlignment="Left" Margin="44.667,125,0,0" VerticalAlignment="Top" Height="30" Width="150" FontSize="14" Grid.Column="1"/>
                             </Grid>
                         </StackPanel>
                     </ScrollViewer>
@@ -63,8 +66,9 @@
             </TabItem>
         </TabControl>
 
-        <Button x:Name="recordBtn" Content="record" HorizontalAlignment="Left" Margin="32,175,0,0" VerticalAlignment="Top" Width="75" Click="recordBtn_Click"/>
-        <Button x:Name="phoneBTBtn" Content="phone" HorizontalAlignment="Left" Height="23" Margin="32,225,0,0" VerticalAlignment="Top" Width="89" Click="phoneBTBtn_Click"/>
+        <Button x:Name="recordBtn" Content="record" HorizontalAlignment="Left" Margin="32,360,0,0" VerticalAlignment="Top" Width="75" Click="recordBtn_Click"/>
+        <Button x:Name="phoneBTBtn" Content="Connect" HorizontalAlignment="Left" Height="20" Margin="32,185,0,0" VerticalAlignment="Top" Width="75" Click="phoneBTBtn_Click"/>
+        <Label x:Name="label_Copy" Content="Phone :" HorizontalAlignment="Left" Margin="32,154,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
 
 </Window>

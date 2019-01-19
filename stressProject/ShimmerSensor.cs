@@ -16,6 +16,7 @@ namespace stressProject
 
         private string address;
         private MessageTransferStation mts;
+        private double startTime;
         
 
 
@@ -49,7 +50,7 @@ namespace stressProject
                 updateMessage("Shimmer device is connected");
                
                 shimmer.StartStreaming();
-
+                startTime = mts.GetTime();
 
             }
 
@@ -97,8 +98,8 @@ namespace stressProject
                     //TimeSpan time = stopwatch.Elapsed;
 
                     //double time = DateTime.Now.ToOADate();
-                    double time = mts.getTime();
-
+                    double time = mts.GetTime() - startTime;
+                   
                     SensorData[] data = { GSRdata, AccX, AccY, AccZ };
                     //Debug.WriteLine(time.GetType());
 

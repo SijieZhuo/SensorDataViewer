@@ -17,6 +17,9 @@ namespace stressProject
         Guid guid;
         private MessageTransferStation mts;
         bool connected;
+        BluetoothClient client;
+
+        private double startTime;
 
         public PhoneSensor()
         {
@@ -32,11 +35,11 @@ namespace stressProject
         {
             BTListener = new BluetoothListener(guid);
             BTListener.Start();
-            BluetoothClient client = BTListener.AcceptBluetoothClient();
+             client = BTListener.AcceptBluetoothClient();
 
             connected = true;
             Stream mStream = client.GetStream();
-            Debug.WriteLine(client.Connected + "1");
+            startTime = mts.GetTime();
             while (connected)
             {
                 ReceivingData(mStream);
@@ -53,13 +56,13 @@ namespace stressProject
                 string s = Encoding.UTF8.GetString(received, 0, received.Length);
 
                 string[] phoneData = s.Split(',');
-                Debug.WriteLine("phone data length: " + phoneData.Count());
-                if (phoneData.Count() == 11)
+                if (phoneData.Count() == 14)
                 {
-                    updateData(new Tuple<double, string[]>(mts.getTime(), phoneData));
+                    updateData(new Tuple<double, string[]>(mts.GetTime()- startTime, phoneData));
                 }
                 else if (phoneData.Count() == 7)
                 {
+                    updateTouchData(new Tuple<double, string[]>(mts.GetTime()-startTime, phoneData));
                     Debug.WriteLine("touch: " + s);
                 }
 
@@ -85,6 +88,21 @@ namespace stressProject
              });
         }
 
+
+        private void updateTouchData(Tuple<double, string[]> data)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                mts.PTData = data;
+            });
+        }
+
+
+
+        public void disconnect() {
+            connected = false;
+            client.Close();
+        }
 
 
     }

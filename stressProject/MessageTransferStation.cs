@@ -22,17 +22,27 @@ namespace stressProject
 
         private string _messageText;
         private MainWindow mw;
+
         public Tuple<double, SensorData[]> shimmerData;
-        public Tuple<double, string[]> phoneData;
         public List<Tuple<double, SensorData[]>> shimmerDataList;
-        public List<string[]> phoneDataList;
+
+        public Tuple<double, string[]> phoneData;
+        public List<Tuple<double, string[]>> phoneDataList;
+
+        public Tuple<double, string[]> phoneTouchData;
+        public List<Tuple<double, string[]>> phoneTouchDataList;
+
+
+
         public string RootDirectory = Directory.GetCurrentDirectory();
+        Guid guid = new Guid("6bfc8497-b445-406e-b639-a5abaf4d9739");
+        double startTime;
 
 
         Stopwatch stopwatch;
 
 
-        Guid guid = new Guid("6bfc8497-b445-406e-b639-a5abaf4d9739");
+
 
 
         public static MessageTransferStation instance;
@@ -43,9 +53,12 @@ namespace stressProject
             _messageText = string.Empty;
             mw = (MainWindow)Application.Current.MainWindow;
             shimmerDataList = new List<Tuple<double, SensorData[]>>();
+            phoneDataList = new List<Tuple<double, string[]>>();
+            phoneTouchDataList = new List<Tuple<double, string[]>>();
 
             stopwatch = new Stopwatch();
             stopwatch.Start();
+            startTime = new TimeSpan(DateTime.Now.Ticks).TotalSeconds;
         }
 
         public string MessageText
@@ -71,7 +84,7 @@ namespace stressProject
                 OnPropertyChanged("SData");
                 SensorData[] data = shimmerData.Item2;
                 //mw.updateShimmerChart(_data);
-                mw.timeChart.updateShimmerChart(shimmerData.Item1,data[0].Data);
+                mw.timeChart.updateShimmerChart(shimmerData.Item1, data[0].Data);
                 shimmerDataList.Add(shimmerData);
 
             }
@@ -87,7 +100,7 @@ namespace stressProject
                 OnPropertyChanged("PData");
                 string[] data = phoneData.Item2;
                 //mw.updateShimmerChart(_data);
-                mw.pChart.updateShimmerChart(phoneData.Item1, Int32.Parse(data[0]));
+                mw.pChart.updateShimmerChart(phoneData.Item1, int.Parse(data[0]));
                 mw.AccX.Content = "Acc X: " + data[1];
                 mw.AccY.Content = "Acc Y: " + data[2];
                 mw.AccZ.Content = "Acc Z: " + data[3];
@@ -98,11 +111,32 @@ namespace stressProject
                 mw.GraY.Content = "Gra Y: " + data[8];
                 mw.GraZ.Content = "Gra Z: " + data[9];
                 mw.currentApp.Content = "Current App: " + data[10];
-                //shimmerDataList.Add(shimmerData);
+                mw.ScreenStatus.Content = "Screen Status: " + data[11];
+                mw.Data_download.Content = "Data Download: " + data[12];
+                mw.Data_upload.Content = "Data Upload: " + data[13];
+
+                phoneDataList.Add(phoneData);
 
             }
 
         }
+
+        public Tuple<double, string[]> PTData
+        {
+            get { return phoneTouchData; }
+            set
+            {
+                phoneTouchData = value;
+                OnPropertyChanged("PTData");
+                string[] data = phoneData.Item2;
+                //mw.updateShimmerChart(_data);
+
+                phoneTouchDataList.Add(phoneTouchData);
+
+            }
+
+        }
+
 
 
 
@@ -117,16 +151,18 @@ namespace stressProject
         public void writeShimmerData(string fileName)
         {
             var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\"+fileName+".csv");
+            StreamWriter sw = new StreamWriter("Records\\" + fileName + ".csv");
             var csv = new CsvWriter(sw);
 
             foreach (Tuple<double, SensorData[]> tuple in shimmerDataList)
             {
-                dynamic record = new ExpandoObject();
-                 record.Time = tuple.Item1;
-                record.GSR = tuple.Item2[0].Data;
-                OutputSdata s = new OutputSdata(tuple.Item1, tuple.Item2[0].Data);
-                
+
+                double time = tuple.Item1 + GetStartTime();
+                string recordedTime = new DateTime(0001, 1, 1, 0, 0, 0).AddSeconds(time).ToString("yyyy MM dd HH:mm:ss.fff");
+
+                OutputSdata s = new OutputSdata(recordedTime, tuple.Item2[0].Data,
+                    tuple.Item2[1].Data, tuple.Item2[2].Data, tuple.Item2[3].Data);
+
                 records.Add(s);
 
 
@@ -135,12 +171,48 @@ namespace stressProject
 
             Thread thread = new Thread(() => Write(csv, records));
             thread.Start();
-
-            Debug.WriteLine("done");
         }
 
-        private void Write(CsvWriter csv, dynamic records) {
+
+        public void writePhoneData(string fileName)
+        {
+            var records = new List<object>();
+            StreamWriter sw = new StreamWriter("Records\\" + fileName + ".csv");
+            var csv = new CsvWriter(sw);
+
+            Debug.WriteLine(phoneDataList.Count + "list count");
+
+            foreach (Tuple<double, string[]> tuple in phoneDataList)
+            {
+
+                double time = tuple.Item1 + GetStartTime();
+                string recordedTime = new DateTime(0001, 1, 1, 0, 0, 0).AddSeconds(time).ToString("yyyy MM dd HH:mm:ss.fff");
+
+                OutputPdata p = new OutputPdata(recordedTime, int.Parse(tuple.Item2[0]),
+                    double.Parse(tuple.Item2[1]), double.Parse(tuple.Item2[2])
+                    , double.Parse(tuple.Item2[3]), double.Parse(tuple.Item2[4])
+                    , double.Parse(tuple.Item2[5]), double.Parse(tuple.Item2[6])
+                    , double.Parse(tuple.Item2[7]), double.Parse(tuple.Item2[8])
+                    , double.Parse(tuple.Item2[9]), tuple.Item2[10]
+                    , tuple.Item2[11], double.Parse(tuple.Item2[12])
+                    , double.Parse(tuple.Item2[13]));
+
+                records.Add(p);
+
+
+            }
+            Debug.WriteLine(records.Count());
+
+            Thread thread = new Thread(() => Write(csv, records));
+            thread.Start();
+        }
+
+
+        private void Write(CsvWriter csv, dynamic records)
+        {
             csv.WriteRecords(records);
+            _messageText = "record completed";
+            Debug.WriteLine("record completed");
         }
 
 
@@ -162,17 +234,61 @@ namespace stressProject
 
 
 
-        private class OutputSdata {
-            public double Time { get; set; }
-            public double Data { get; set; }
+        private class OutputSdata
+        {
+            public string Time { get; set; }
+            public double GSR { get; set; }
+            public double AccX { get; set; }
+            public double AccY { get; set; }
+            public double AccZ { get; set; }
 
-            public OutputSdata(double t, double d) {
+            public OutputSdata(string t, double d, double x, double y, double z)
+            {
                 Time = t;
-                Data = d;
+                GSR = d;
+                AccX = x;
+                AccY = y;
+                AccZ = z;
             }
         }
 
+        private class OutputPdata{
 
+            public string Time { get; set; }
+            public int Sound { get; set; }
+            public double AccX { get; set; }
+            public double AccY { get; set; }
+            public double AccZ { get; set; }
+            public double RotX { get; set; }
+            public double RotY { get; set; }
+            public double RotZ { get; set; }
+            public double GraX { get; set; }
+            public double GraY { get; set; }
+            public double GraZ { get; set; }
+            public string CurrentApp { get; set; }
+            public string ScreenStatus { get; set; }
+            public double Downloads { get; set; }
+            public double Uploads { get; set; }
+
+            public OutputPdata(string time, int sound, double accX, double accY, double accZ, double rotX, double rotY, double rotZ, double graX, double graY, double graZ, string currentApp, string screenStatus, double downloads, double uploads)
+            {
+                Time = time;
+                Sound = sound;
+                AccX = accX;
+                AccY = accY;
+                AccZ = accZ;
+                RotX = rotX;
+                RotY = rotY;
+                RotZ = rotZ;
+                GraX = graX;
+                GraY = graY;
+                GraZ = graZ;
+                CurrentApp = currentApp;
+                ScreenStatus = screenStatus;
+                Downloads = downloads;
+                Uploads = uploads;
+            }
+        }
 
 
 
@@ -186,10 +302,19 @@ namespace stressProject
             return guid;
         }
 
+        public void StartTimer() {
+            
 
-        public double getTime()
+        }
+
+        public double GetTime()
         {
             return stopwatch.Elapsed.TotalSeconds;
+        }
+
+        public double GetStartTime()
+        {
+            return startTime;
         }
 
     }

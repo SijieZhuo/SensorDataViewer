@@ -43,6 +43,8 @@ namespace stressProject
 
 
         bool shimmerOn = false;
+        bool phoneOn = false;
+
         ShimmerSensor sensor;
         PhoneSensor phoneSensor;
         RealTimeChart shimmerChart;
@@ -184,7 +186,7 @@ namespace stressProject
                     Debug.WriteLine("object created");
                     new Thread(sensor.setup).Start();
                     shimmerBtn.IsEnabled = true;
-                    shimmerBtn.Content = "Dicconnect";
+                    shimmerBtn.Content = "Diconnect";
 
                 }
                 else
@@ -226,12 +228,23 @@ namespace stressProject
 
         }
 
+        
+
         private void phoneBTBtn_Click(object sender, RoutedEventArgs e)
         {
-
-            phoneSensor = new PhoneSensor();
-
-            new Thread(phoneSensor.PhoneConnection).Start();
+            if (phoneOn)
+            {
+                phoneSensor.disconnect();
+                phoneBTBtn.Content = "Connect";
+               
+            }
+            else
+            {
+                phoneSensor = new PhoneSensor();
+                new Thread(phoneSensor.PhoneConnection).Start();
+                phoneBTBtn.Content = "Disconnect";
+            }
+            phoneOn = !phoneOn;
 
         }
 

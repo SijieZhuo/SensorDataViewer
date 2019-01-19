@@ -49,7 +49,12 @@ namespace stressProject
                 if (MessageBox.Show("The File " + name +".csv is already exist, do you want to overwrite it?", tabName, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     File.Delete(mts.RootDirectory + "\\Records\\" + name + ".csv");
-                    mts.writeShimmerData(name);
+                    if (tabName.Equals("Shimmer")) {
+                        mts.writeShimmerData(name);
+                    } else if(tabName.Equals("Phone")){
+                        Debug.WriteLine("============================");
+                        mts.writePhoneData(name);
+                    }                 
                     this.Close();
                 }
                 
@@ -57,7 +62,15 @@ namespace stressProject
             }
             else {
                 Debug.WriteLine("file not exist");
-                mts.writeShimmerData(name);
+                if (tabName.Equals("Shimmer"))
+                {
+                    mts.writeShimmerData(name);
+                }
+                else if (tabName.Equals("Phone"))
+                {
+                    Debug.WriteLine("============================");
+                    mts.writePhoneData(name);
+                }
                 this.Close();
             }
 
