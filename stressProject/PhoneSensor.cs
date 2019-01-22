@@ -35,7 +35,7 @@ namespace stressProject
         {
             BTListener = new BluetoothListener(guid);
             BTListener.Start();
-             client = BTListener.AcceptBluetoothClient();
+            client = BTListener.AcceptBluetoothClient();
 
             connected = true;
             Stream mStream = client.GetStream();
@@ -58,11 +58,11 @@ namespace stressProject
                 string[] phoneData = s.Split(',');
                 if (phoneData.Count() == 14)
                 {
-                    updateData(new Tuple<double, string[]>(mts.GetTime()- startTime, phoneData));
+                    updateData(new Tuple<double, string[]>(mts.GetTime() - startTime, phoneData));
                 }
                 else if (phoneData.Count() == 7)
                 {
-                    updateTouchData(new Tuple<double, string[]>(mts.GetTime()-startTime, phoneData));
+                    updateTouchData(new Tuple<double, string[]>(mts.GetTime() - startTime, phoneData));
                     Debug.WriteLine("touch: " + s);
                 }
 
@@ -70,7 +70,6 @@ namespace stressProject
 
 
                 //Debug.WriteLine("received : " + s);
-                Debug.WriteLine("");
             }
             catch (IOException e)
             {
@@ -99,7 +98,8 @@ namespace stressProject
 
 
 
-        public void disconnect() {
+        public void disconnect()
+        {
             connected = false;
             client.Close();
         }

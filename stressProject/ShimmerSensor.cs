@@ -17,7 +17,14 @@ namespace stressProject
         private string address;
         private MessageTransferStation mts;
         private double startTime;
-        
+
+
+        int IndexAccelX;
+        int IndexAccelY;
+        int IndexAccelZ;
+        int IndexGSR;
+        int IndexPPG;
+        bool FirstTime;
 
 
 
@@ -26,34 +33,26 @@ namespace stressProject
             address = BTaddress;
             mts = MessageTransferStation.Instance;
 
-
         }
 
 
         public void setup()
         {
+            int enabledSensors = ((int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_GSR) | (int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_A_ACCEL | (int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_INT_A13;
 
-            int enabledSensors = ((int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_GSR) | (int)ShimmerBluetooth.SensorBitmapShimmer3.SENSOR_A_ACCEL;
-
-            //shimmer = new Shimmer32Feet("ShimmerID1", "00:06:66:66:96:86");
             //devName,bluetoothAddress, samplingRate, accelRange, gsrRange, setEnabledSensors, enableLowPowerAccel, enableLowPowerGyro, enableLowPowerMag, gyroRange, magRange, exg1configuration, exg2configuration, internalexppower
             shimmer = new ShimmerLogAndStream32Feet("ShimmerID1", address, 10, 0, ShimmerBluetooth.GSR_RANGE_AUTO, enabledSensors, true, false, false, 1, 0, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP1, Shimmer3Configuration.EXG_EMG_CONFIGURATION_CHIP2, true);
-
             shimmer.UICallback += this.HandleEvent;
-
             shimmer.Connect();
-
+            FirstTime = true;
             if (shimmer.GetState() == ShimmerBluetooth.SHIMMER_STATE_CONNECTED)
             {
-
                 shimmer.WriteSensors(enabledSensors);
                 updateMessage("Shimmer device is connected");
-               
+
                 shimmer.StartStreaming();
                 startTime = mts.GetTime();
-
             }
-
         }
 
         public void HandleEvent(object sender, EventArgs args)
@@ -86,31 +85,40 @@ namespace stressProject
                     break;
                 case (int)ShimmerBluetooth.ShimmerIdentifier.MSG_IDENTIFIER_DATA_PACKET:
                     ObjectCluster objectCluster = (ObjectCluster)eventArgs.getObject();
-                    //List<string> s= objectCluster.GetNames();
-                    //foreach (string st in s) {
-                    //    Debug.WriteLine(st);
-                    //}
-                    SensorData GSRdata = objectCluster.GetData("GSR", "CAL");
-                    SensorData AccX = objectCluster.GetData("Low Noise Accelerometer X", "CAL");
-                    SensorData AccY = objectCluster.GetData("Low Noise Accelerometer Y", "CAL");
-                    SensorData AccZ = objectCluster.GetData("Low Noise Accelerometer Z", "CAL");
 
+                    if (FirstTime)
+                    {
+                        IndexAccelX = objectCluster.GetIndex(Shimmer3Configuration.SignalNames.LOW_NOISE_ACCELEROMETER_X, ShimmerConfiguration.SignalFormats.CAL);
+                        IndexAccelY = objectCluster.GetIndex(Shimmer3Configuration.SignalNames.LOW_NOISE_ACCELEROMETER_Y, ShimmerConfiguration.SignalFormats.CAL);
+                        IndexAccelZ = objectCluster.GetIndex(Shimmer3Configuration.SignalNames.LOW_NOISE_ACCELEROMETER_Z, ShimmerConfiguration.SignalFormats.CAL);
+                        IndexGSR = objectCluster.GetIndex(Shimmer3Configuration.SignalNames.GSR, ShimmerConfiguration.SignalFormats.CAL);
+                        IndexPPG = objectCluster.GetIndex(Shimmer3Configuration.SignalNames.INTERNAL_ADC_A13, ShimmerConfiguration.SignalFormats.CAL);
+                        FirstTime = false;
+                    }
+
+                    List<string> s= objectCluster.GetNames();
+                    foreach (string st in s) {
+                        Debug.WriteLine(st);
+                    }
+                    SensorData datax = objectCluster.GetData(IndexAccelX);
+                    SensorData datay = objectCluster.GetData(IndexAccelY);
+                    SensorData dataz = objectCluster.GetData(IndexAccelZ);
+                    SensorData dataGSR = objectCluster.GetData(IndexGSR);
+                    SensorData dataPPG = objectCluster.GetData(IndexPPG);
                     //TimeSpan time = stopwatch.Elapsed;
 
                     //double time = DateTime.Now.ToOADate();
                     double time = mts.GetTime() - startTime;
-                   
-                    SensorData[] data = { GSRdata, AccX, AccY, AccZ };
+
+                    SensorData[] data = { dataGSR, dataPPG, datax, datay, dataz };
                     //Debug.WriteLine(time.GetType());
 
                     Tuple<double, SensorData[]> dataTuple = new Tuple<double, SensorData[]>(time, data);
                     //objectCluster.GetNames
 
-                    
 
-                    //updateMessage("AccelX: " + data.Data);
+
                     updateData(dataTuple);
-
                     break;
             }
         }
@@ -120,7 +128,6 @@ namespace stressProject
             Application.Current.Dispatcher.Invoke(() =>
             {
                 mts.MessageText = message;
-
             });
         }
 
@@ -133,7 +140,8 @@ namespace stressProject
             });
         }
 
-        public void disconnect() {
+        public void disconnect()
+        {
             shimmer.Disconnect();
         }
 

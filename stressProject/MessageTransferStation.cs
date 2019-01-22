@@ -161,7 +161,7 @@ namespace stressProject
                 string recordedTime = new DateTime(0001, 1, 1, 0, 0, 0).AddSeconds(time).ToString("yyyy MM dd HH:mm:ss.fff");
 
                 OutputSdata s = new OutputSdata(recordedTime, tuple.Item2[0].Data,
-                    tuple.Item2[1].Data, tuple.Item2[2].Data, tuple.Item2[3].Data);
+                    tuple.Item2[1].Data, tuple.Item2[2].Data, tuple.Item2[3].Data,tuple.Item2[4].Data);
 
                 records.Add(s);
 
@@ -180,7 +180,6 @@ namespace stressProject
             StreamWriter sw = new StreamWriter("Records\\" + fileName + ".csv");
             var csv = new CsvWriter(sw);
 
-            Debug.WriteLine(phoneDataList.Count + "list count");
 
             foreach (Tuple<double, string[]> tuple in phoneDataList)
             {
@@ -238,14 +237,16 @@ namespace stressProject
         {
             public string Time { get; set; }
             public double GSR { get; set; }
+            public double PPG { get; set; }
             public double AccX { get; set; }
             public double AccY { get; set; }
             public double AccZ { get; set; }
 
-            public OutputSdata(string t, double d, double x, double y, double z)
+            public OutputSdata(string t, double d, double p, double x, double y, double z)
             {
                 Time = t;
                 GSR = d;
+                PPG = p;
                 AccX = x;
                 AccY = y;
                 AccZ = z;
@@ -302,10 +303,6 @@ namespace stressProject
             return guid;
         }
 
-        public void StartTimer() {
-            
-
-        }
 
         public double GetTime()
         {

@@ -26,7 +26,7 @@ namespace stressProject
         string tabName;
 
         public RecordPopup(string tabName)
-        {            
+        {
             InitializeComponent();
             Title = "Save Data";
             mts = MessageTransferStation.Instance;
@@ -46,21 +46,24 @@ namespace stressProject
 
             if (File.Exists(mts.RootDirectory + "\\Records\\" + name + ".csv"))
             {
-                if (MessageBox.Show("The File " + name +".csv is already exist, do you want to overwrite it?", tabName, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                if (MessageBox.Show("The File " + name + ".csv is already exist, do you want to overwrite it?", tabName, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     File.Delete(mts.RootDirectory + "\\Records\\" + name + ".csv");
-                    if (tabName.Equals("Shimmer")) {
+                    if (tabName.Equals("Shimmer"))
+                    {
                         mts.writeShimmerData(name);
-                    } else if(tabName.Equals("Phone")){
-                        Debug.WriteLine("============================");
+                    }
+                    else if (tabName.Equals("Phone"))
+                    {
                         mts.writePhoneData(name);
-                    }                 
+                    }
                     this.Close();
                 }
-                
+
                 Debug.WriteLine("file exist");
             }
-            else {
+            else
+            {
                 Debug.WriteLine("file not exist");
                 if (tabName.Equals("Shimmer"))
                 {
@@ -68,7 +71,6 @@ namespace stressProject
                 }
                 else if (tabName.Equals("Phone"))
                 {
-                    Debug.WriteLine("============================");
                     mts.writePhoneData(name);
                 }
                 this.Close();
