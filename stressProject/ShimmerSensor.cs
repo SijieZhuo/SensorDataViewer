@@ -96,10 +96,10 @@ namespace stressProject
                         FirstTime = false;
                     }
 
-                    List<string> s= objectCluster.GetNames();
-                    foreach (string st in s) {
-                        Debug.WriteLine(st);
-                    }
+                   // List<string> s= objectCluster.GetNames();
+                   // foreach (string st in s) {
+                  //      Debug.WriteLine(st);
+                  //  }
                     SensorData datax = objectCluster.GetData(IndexAccelX);
                     SensorData datay = objectCluster.GetData(IndexAccelY);
                     SensorData dataz = objectCluster.GetData(IndexAccelZ);

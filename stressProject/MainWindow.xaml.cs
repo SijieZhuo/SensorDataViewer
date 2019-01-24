@@ -28,6 +28,7 @@ using MindFusion.RealTimeCharting.Wpf;
 using System.Windows.Threading;
 using InTheHand.Net;
 using System.IO;
+using stressProject.SystemLog;
 
 namespace stressProject
 {
@@ -51,7 +52,7 @@ namespace stressProject
         public TimeChart timeChart;
         public TimeChart pChart;
 
-
+        private SystemMonitor monitor;
 
 
 
@@ -82,7 +83,7 @@ namespace stressProject
             pChart = new TimeChart(500, 300, "sound", "db", 0, 150, 15);
             sp2.Children.Add(pChart.GetTimeChart());
 
-
+            monitor = new SystemMonitor();
 
 
             Directory.CreateDirectory(mts.RootDirectory + "\\Records");
@@ -96,6 +97,9 @@ namespace stressProject
 
         private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
         {
+
+            mts.SystemText = "1";
+
             comboBox.Items.Clear();
 
             Button button = sender as Button;
@@ -151,9 +155,15 @@ namespace stressProject
 
         public void updateTextBox()
         {
-            Debug.WriteLine(mts.MessageText);
 
             textBox.Text = mts.MessageText;
+
+        }
+
+        public void updateSystem()
+        {
+
+            textBlock.Text = textBlock.Text + Environment.NewLine + mts.SystemText;
 
         }
 
@@ -180,10 +190,8 @@ namespace stressProject
                 if (checkShimmer(comboBox.SelectedItem.ToString()))
                 {
                     mts.MessageText = "pairing device";
-                    Debug.WriteLine("mainwindow" + Thread.CurrentThread.ManagedThreadId);
 
                     sensor = new ShimmerSensor(BTmap[comboBox.SelectedItem.ToString()]);
-                    Debug.WriteLine("object created");
                     new Thread(sensor.setup).Start();
                     shimmerBtn.IsEnabled = true;
                     shimmerBtn.Content = "Diconnect";

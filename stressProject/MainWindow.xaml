@@ -28,7 +28,6 @@
                     </ScrollViewer>
                 </Grid>
 
-
             </TabItem>
             <TabItem Header="Phone">
                 <Grid Background="#FFE5E5E5">
@@ -64,6 +63,17 @@
 
                 </Grid>
             </TabItem>
+
+            <TabItem Header="SystemLog">
+                <Grid Background="#FFE5E5E5">
+                    <ScrollViewer HorizontalAlignment="Left" Height="342" VerticalAlignment="Top" Width="602" RenderTransformOrigin="-0.223,0.262">
+                        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="16"/>
+
+                    </ScrollViewer>
+
+                </Grid>
+            </TabItem>
+
         </TabControl>
 
         <Button x:Name="recordBtn" Content="record" HorizontalAlignment="Left" Margin="32,360,0,0" VerticalAlignment="Top" Width="75" Click="recordBtn_Click"/>

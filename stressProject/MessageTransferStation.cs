@@ -21,6 +21,7 @@ namespace stressProject
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string _messageText;
+        private string _systemText;
         private MainWindow mw;
 
         public Tuple<double, SensorData[]> shimmerData;
@@ -51,6 +52,7 @@ namespace stressProject
         public MessageTransferStation()
         {
             _messageText = string.Empty;
+            _systemText = string.Empty;
             mw = (MainWindow)Application.Current.MainWindow;
             shimmerDataList = new List<Tuple<double, SensorData[]>>();
             phoneDataList = new List<Tuple<double, string[]>>();
@@ -70,6 +72,20 @@ namespace stressProject
                 OnPropertyChanged("MessageText");
 
                 mw.updateTextBox();
+
+            }
+
+        }
+
+        public string SystemText
+        {
+            get { return _systemText; }
+            set
+            {
+                _systemText = value;
+                OnPropertyChanged("SystemText");
+
+                mw.updateSystem();
 
             }
 

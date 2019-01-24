@@ -18,9 +18,12 @@ namespace stressProject
         string title, yTitle;
         int yOrigin, yLength, yInterval, width, height;
 
+        List<double> yValues;
+
         RealTimeChart chart;
 
-        public TimeChart(int width, int height, string title, string yTitle, int yOrigin, int yLength, int yInterval) {
+        public TimeChart(int width, int height, string title, string yTitle, int yOrigin, int yLength, int yInterval)
+        {
             this.title = title;
             this.yTitle = yTitle;
             this.yOrigin = yOrigin;
@@ -29,19 +32,23 @@ namespace stressProject
             this.width = width;
             this.height = height;
 
+            yValues = new List<double>();
+
             TimeChartSetUp();
         }
 
 
-        public void TimeChartSetUp() {
+        public void TimeChartSetUp()
+        {
             chart = new RealTimeChart();
             chart.Width = width;
             chart.Height = height;
             chart.FastScrollMode = true;
             chart.TitleText = title;
 
-            chart.TooltipVisibility = Visibility.Visible;
-            chart.ShowFallbackTooltip = true;
+
+            chart.TooltipVisibility = Visibility.Hidden;
+            chart.ShowFallbackTooltip = false;
 
             chart.XAxis.Title = "Time";
             chart.XAxis.PinLabels = false;
@@ -65,7 +72,7 @@ namespace stressProject
             Series series1 = new Series(chart.YAxisCollection[0])
             {
                 Stroke = new SolidColorBrush(Color.FromRgb(166, 46, 68)),
-                Title = "GSR",
+                Title = yTitle,
                 ScatterType = ScatterType.None,
                 TitleFontFamily = new FontFamily("Verdana"),
                 TitleFontSize = 12
@@ -74,24 +81,40 @@ namespace stressProject
 
             chart.SeriesCollection.Add(series1);
 
-            chart.TooltipAxis = chart.YAxisCollection[0];
+            //chart.TooltipAxis = chart.YAxisCollection[0];
 
-            
+
         }
 
 
 
         public void updateShimmerChart(double x, double y)
         {
-            chart.FastScrollMode = true;
             Point[] points1 = new Point[clusterSize];
 
-            double minNewX = currCount- 2000;
-            
+
             points1[0] = new Point(x, y);
+            yValues.Add(y);
             currCount++;
-            Debug.WriteLine(currCount + "  " + x);
             Series series = chart.SeriesCollection.ElementAt(0);
+
+
+            
+
+            Debug.WriteLine("max "+yValues.Max() +"  min  "+ yValues.Min());
+
+   //         Axis yAxis = chart.YAxisCollection.ElementAt(0);
+
+            series.YAxis.Origin = yValues.Min();
+            series.YAxis.Length = yValues.Max() - yValues.Min();
+            series.YAxis.Interval = 10;
+
+            series.YAxis.Title = y.ToString();
+
+            //series.YAxis.LabelOrigin = yValues.Min();
+
+
+
             series.Data.AddRange(points1);
 
             chart.Commit();
@@ -105,14 +128,21 @@ namespace stressProject
         private void DisposeOldData(RealTimeChart chart)
         {
             Series series = chart.SeriesCollection.ElementAt(0);
-            if (series.Data.Count > 500 &&
-                series.Data[499].X < chart.XAxis.Origin)
-                series.Data.RemoveRange(0, 500);
+            if (series.Data.Count > 100 &&
+                series.Data[0].X < chart.XAxis.Origin)
+            {
+                //series.Data.;
+                series.Data.RemoveRange(0, 1);
+                yValues.RemoveRange(0,1);
+            }
         }
 
 
 
-        public RealTimeChart GetTimeChart() {
+
+
+        public RealTimeChart GetTimeChart()
+        {
             return chart;
         }
 
