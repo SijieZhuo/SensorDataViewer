@@ -52,7 +52,6 @@ namespace stressProject
             {
                 byte[] received = new byte[1024];
                 mStream.Read(received, 0, received.Length);
-                char[] charArray = Encoding.UTF8.GetString(received).ToCharArray();
                 string s = Encoding.UTF8.GetString(received, 0, received.Length);
 
                 string[] phoneData = s.Split(',');

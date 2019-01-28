@@ -90,6 +90,8 @@ namespace stressProject
 
             Directory.CreateDirectory(mts.RootDirectory + "\\Records");
 
+            ChromeSensor cs = new ChromeSensor();
+
 
 
 

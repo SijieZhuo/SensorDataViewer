@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace stressProject
 {
     /// <summary>
-    /// Interaction logic for RealTimeChart.xaml
+    /// Interaction logic for Chart.xaml
     /// </summary>
-    public partial class RealTimeChart : Window
+    public partial class Chart : Window
     {
-        public RealTimeChart()
+        public Chart()
         {
             InitializeComponent();
         }
