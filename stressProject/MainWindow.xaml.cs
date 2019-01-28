@@ -85,6 +85,8 @@ namespace stressProject
 
             monitor = new SystemMonitor();
 
+            chart1 = new LiveCharts.Wpf.CartesianChart();
+
 
             Directory.CreateDirectory(mts.RootDirectory + "\\Records");
 
