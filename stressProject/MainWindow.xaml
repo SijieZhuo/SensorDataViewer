@@ -35,9 +35,11 @@
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="0*"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <ScrollViewer HorizontalAlignment="Center" Height="352" VerticalAlignment="Top" Width="612" RenderTransformOrigin="-0.223,0.262" Grid.ColumnSpan="2">
+                    <ScrollViewer HorizontalAlignment="Center" Height="352" VerticalAlignment="Top" Width="612" RenderTransformOrigin="-0.223,0.262" Grid.ColumnSpan="4">
                         <StackPanel x:Name="sp2" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="586" RenderTransformOrigin="0.485,0.524">
                             <Grid x:Name="dataGrid" HorizontalAlignment="Center" Height="188" Margin="11,10,1,0" VerticalAlignment="Center" Width="574" Grid.Row="3" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
@@ -69,7 +71,9 @@
             <TabItem Header="SystemLog">
                 <Grid Background="#FFE5E5E5">
                     <ScrollViewer HorizontalAlignment="Left" Height="342" VerticalAlignment="Top" Width="602" RenderTransformOrigin="-0.223,0.262">
-                        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="16"/>
+                        <DataGrid x:Name="DG1" ItemsSource="{Binding}" Height="276" Width="560" />
+
+
 
                     </ScrollViewer>
 

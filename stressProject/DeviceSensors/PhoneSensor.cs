@@ -1,4 +1,5 @@
 ﻿using InTheHand.Net.Sockets;
+using stressProject.OutputData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,13 +56,22 @@ namespace stressProject
                 string s = Encoding.UTF8.GetString(received, 0, received.Length);
 
                 string[] phoneData = s.Split(',');
+                string time = mts.DoubleToTimeString(mts.GetTime() - startTime);
                 if (phoneData.Count() == 14)
                 {
-                    updateData(new Tuple<double, string[]>(mts.GetTime() - startTime, phoneData));
+                    PhoneData pData = new PhoneData(time, int.Parse(phoneData[0]), double.Parse(phoneData[1]),
+                        double.Parse(phoneData[2]), double.Parse(phoneData[3]), double.Parse(phoneData[4]), 
+                        double.Parse(phoneData[5]), double.Parse(phoneData[6]), double.Parse(phoneData[7]),
+                        double.Parse(phoneData[8]), double.Parse(phoneData[9]), phoneData[10],
+                        phoneData[11], double.Parse(phoneData[12]), double.Parse(phoneData[13]));
+                    updateData(pData);
                 }
                 else if (phoneData.Count() == 7)
                 {
-                    updateTouchData(new Tuple<double, string[]>(mts.GetTime() - startTime, phoneData));
+                    //updateTouchData(new Tuple<double, string[]>(mts.GetTime() - startTime, phoneData));
+
+                    TouchData data = new TouchData(time, phoneData[0], phoneData[1], phoneData[2], phoneData[3], phoneData[4], phoneData[5], phoneData[6]);
+                    updateTouchData(data);
                     Debug.WriteLine("touch: " + s);
                 }
 
@@ -78,7 +88,7 @@ namespace stressProject
         }
 
 
-        private void updateData(Tuple<double, string[]> data)
+        private void updateData(PhoneData data)
         {
             Application.Current.Dispatcher.Invoke(() =>
              {
@@ -87,7 +97,7 @@ namespace stressProject
         }
 
 
-        private void updateTouchData(Tuple<double, string[]> data)
+        private void updateTouchData(TouchData data)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

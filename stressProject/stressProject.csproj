@@ -115,6 +115,10 @@
     <Compile Include="MeasureModel.cs" />
     <Compile Include="MessageTransferStation.cs" />
     <Compile Include="DeviceSensors\PhoneSensor.cs" />
+    <Compile Include="OutputData\PhoneData.cs" />
+    <Compile Include="OutputData\ShimmerData.cs" />
+    <Compile Include="OutputData\SystemLogData.cs" />
+    <Compile Include="OutputData\TouchData.cs" />
     <Compile Include="RecordPopup.xaml.cs">
       <DependentUpon>RecordPopup.xaml</DependentUpon>
     </Compile>

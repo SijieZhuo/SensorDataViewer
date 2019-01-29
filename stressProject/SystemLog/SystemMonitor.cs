@@ -1,6 +1,7 @@
 ﻿//using log4net;
 //using log4net.Config;
 using MonitorApp.Helper;
+using stressProject.OutputData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,20 +22,20 @@ namespace stressProject.SystemLog
         private const uint EVENT_OBJECT_NAMECHANGE = 0x800C;
         private const int KEYBOARD_TIMER_INTERVAL = 2000;
 
-       // private NotifyIcon _trayIcon;
+        // private NotifyIcon _trayIcon;
         private WinEventDelegate _dele;
         private LowLevelKeyboardHook _keyHook;
         private IgnoreStringHelper _ignoreStringHelper;
         private string _previousWindowTitle;
-        private Boolean _isEclipseFocused;
         private Timer _keyboardTimer;
 
         private MessageTransferStation mts;
 
-       // private static ILog _logger;
+        // private static ILog _logger;
 
 
-        public SystemMonitor() {
+        public SystemMonitor()
+        {
 
             //XmlConfigurator.Configure();
 
@@ -43,7 +44,6 @@ namespace stressProject.SystemLog
             //_logger = logger;
             _ignoreStringHelper = new IgnoreStringHelper();
             _previousWindowTitle = "";
-            _isEclipseFocused = false;
 
 
 
@@ -57,11 +57,13 @@ namespace stressProject.SystemLog
         {
             try
             {
-                string currentTimpstamp = GetCurrentTimestamp();
+                string currentTimpstamp = mts.DoubleToTimeString(mts.GetTime());
                 // Focused
                 IntPtr foregroundWindowHandle = WindowHelper.GetForegroundWindowPointer();
                 string moduleName = WindowHelper.GetProcessModuleName(foregroundWindowHandle);
                 string windowName = WindowHelper.GetWindowText(foregroundWindowHandle);
+                string[] logArray;
+                SystemLogData data;
 
                 string foregroundWindowLogInfo = FormatWindowInfo(moduleName, windowName);
                 if (foregroundWindowLogInfo == null
@@ -69,16 +71,14 @@ namespace stressProject.SystemLog
                     || foregroundWindowLogInfo.Equals(_previousWindowTitle)
                     || _ignoreStringHelper.shouldIgnoreThisString(foregroundWindowLogInfo)) return;
 
-                _isEclipseFocused = moduleName.ToLower().Contains("eclipse.exe");
-                // if (!_isEclipseFocused && _keyboardTimer.Enabled)
-                //    {
-                //         this.kbh_noActivity(null, null);
-                //     }
                 _previousWindowTitle = foregroundWindowLogInfo;
-
+                //ystemLogData data = new SystemLogData();
                 string foregroundWindowLog = currentTimpstamp + "," + foregroundWindowLogInfo + ",focused";
+                logArray = foregroundWindowLog.Split(',');
+                 data = new SystemLogData(logArray[0], logArray[1], logArray[2], logArray[3]);
+
                 //_logger.Info(foregroundWindowLog);
-                updateMessage(foregroundWindowLog);
+                updateData(data);
 
                 // visible
                 List<string> listOfVisibleWindow = WindowHelper.GetAllVisibleWindowExcludingForegroundWindow(foregroundWindowHandle);
@@ -88,8 +88,12 @@ namespace stressProject.SystemLog
                     if (!_ignoreStringHelper.shouldIgnoreThisString(windowInfo))
                     {
                         string log = currentTimpstamp + "," + windowInfo + ",visible";
+                         logArray = log.Split(',');
+                         data = new SystemLogData(logArray[0], logArray[1], logArray[2], logArray[3]);
+
                         //_logger.Info(log);
-                        updateMessage(log);
+                        updateData(data);
+                        Debug.WriteLine(windowInfo);
                     }
                 }
             }
@@ -98,7 +102,7 @@ namespace stressProject.SystemLog
                 // _logger.Warn(e.Message);
                 Debug.WriteLine(e);
 
-                updateMessage(e.Message);
+               //updateMessage(e.Message);
             }
         }
 
@@ -121,12 +125,12 @@ namespace stressProject.SystemLog
             return DateTime.UtcNow.ToString("o");
         }
 
-        private void updateMessage(string message)
+        private void updateData(SystemLogData data)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 //mts.MessageText = message;
-                mts.SystemText = message;
+                mts.SystemLogData = data;
             });
         }
 

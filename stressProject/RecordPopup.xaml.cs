@@ -41,13 +41,15 @@ namespace stressProject
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             string name = textBox.Text;
+            string path = mts.RootDirectory + "\\Records\\" + name;
 
-            if (File.Exists(mts.RootDirectory + "\\Records\\" + name))
+            if (Directory.Exists(path))
             {
                 if (MessageBox.Show("The File " + name + " is already exist, do you want to overwrite it?", "Saving", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
-                    File.Delete(mts.RootDirectory + "\\Records\\" + name);
-                    
+                    Directory.Delete(path);
+                    Directory.CreateDirectory(path);
+
                     mts.WriteData(name);
                     
                     this.Close();
@@ -58,6 +60,7 @@ namespace stressProject
             else
             {
                 Debug.WriteLine("file not exist");
+                Directory.CreateDirectory(path);
                 mts.WriteData(name);
                 this.Close();
             }

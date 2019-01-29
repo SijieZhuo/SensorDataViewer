@@ -27,7 +27,6 @@ namespace stressProject
     {
         private double _axisMax;
         private double _axisMin;
-        private double _trend;
 
         public RTChart()
         {

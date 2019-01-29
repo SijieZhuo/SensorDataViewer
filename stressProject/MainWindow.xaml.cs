@@ -29,6 +29,7 @@ using System.Windows.Threading;
 using InTheHand.Net;
 using System.IO;
 using stressProject.SystemLog;
+using stressProject.OutputData;
 
 namespace stressProject
 {
@@ -54,6 +55,8 @@ namespace stressProject
         public TimeChart pChart;
 
         private SystemMonitor monitor;
+
+         List<SystemLogData> systemLogdataList;
 
 
 
@@ -93,7 +96,9 @@ namespace stressProject
 
             ChromeSensor cs = new ChromeSensor();
 
+            systemLogdataList = new List<SystemLogData>();
 
+            DG1.DataContext = systemLogdataList;
 
 
         }
@@ -105,7 +110,6 @@ namespace stressProject
         private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
         {
 
-            mts.SystemText = "1";
 
             comboBox.Items.Clear();
 
@@ -169,8 +173,9 @@ namespace stressProject
 
         public void updateSystem()
         {
-
-            textBlock.Text = textBlock.Text + Environment.NewLine + mts.SystemText;
+            systemLogdataList = mts.GetSystemLogDatas();
+            DG1.DataContext = mts.GetSystemLogDatas();
+            //textBlock.Text = textBlock.Text + Environment.NewLine + mts.SystemLogData.Time;
 
         }
 

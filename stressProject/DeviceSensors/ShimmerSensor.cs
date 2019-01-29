@@ -7,6 +7,7 @@ using ShimmerAPI;
 using System.Windows;
 using System.Threading;
 using System.Diagnostics;
+using stressProject.OutputData;
 
 namespace stressProject
 {
@@ -110,15 +111,10 @@ namespace stressProject
                     //double time = DateTime.Now.ToOADate();
                     double time = mts.GetTime() - startTime;
 
-                    SensorData[] data = { dataGSR, dataPPG, datax, datay, dataz };
-                    //Debug.WriteLine(time.GetType());
+                    ShimmerData dataObj = new ShimmerData(mts.DoubleToTimeString(time), dataGSR.Data, dataPPG.Data, datax.Data, datay.Data, dataz.Data);
+                    //Debug.WriteLine(dataObj.Time);
 
-                    Tuple<double, SensorData[]> dataTuple = new Tuple<double, SensorData[]>(time, data);
-                    //objectCluster.GetNames
-
-
-
-                    updateData(dataTuple);
+                    updateData(dataObj);
                     break;
             }
         }
@@ -132,7 +128,7 @@ namespace stressProject
         }
 
 
-        private void updateData(Tuple<double, SensorData[]> data)
+        private void updateData(ShimmerData data)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

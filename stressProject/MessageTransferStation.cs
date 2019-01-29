@@ -13,6 +13,7 @@ using System.Windows;
 using CsvHelper;
 using System.Dynamic;
 using System.IO;
+using stressProject.OutputData;
 
 namespace stressProject
 {
@@ -21,17 +22,20 @@ namespace stressProject
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string _messageText;
-        private string _systemText;
+
         private MainWindow mw;
 
-        public Tuple<double, SensorData[]> shimmerData;
-        public List<Tuple<double, SensorData[]>> shimmerDataList;
+        public ShimmerData shimmerData;
+        public List<ShimmerData> shimmerDataList;
 
-        public Tuple<double, string[]> phoneData;
-        public List<Tuple<double, string[]>> phoneDataList;
+        public PhoneData phoneData;
+        public List<PhoneData> phoneDataList;
 
-        public Tuple<double, string[]> phoneTouchData;
-        public List<Tuple<double, string[]>> phoneTouchDataList;
+        public TouchData phoneTouchData;
+        public List<TouchData> phoneTouchDataList;
+
+        private SystemLogData systemLogdata;
+        public List<SystemLogData> systemLogdataList;
 
 
 
@@ -53,11 +57,12 @@ namespace stressProject
         public MessageTransferStation()
         {
             _messageText = string.Empty;
-            _systemText = string.Empty;
+            systemLogdata = null;
             mw = (MainWindow)Application.Current.MainWindow;
-            shimmerDataList = new List<Tuple<double, SensorData[]>>();
-            phoneDataList = new List<Tuple<double, string[]>>();
-            phoneTouchDataList = new List<Tuple<double, string[]>>();
+            shimmerDataList = new List<ShimmerData>();
+            phoneDataList = new List<PhoneData>();
+            phoneTouchDataList = new List<TouchData>();
+            systemLogdataList = new List<SystemLogData>();
 
             stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -80,31 +85,33 @@ namespace stressProject
 
         }
 
-        public string SystemText
+        public SystemLogData SystemLogData
         {
-            get { return _systemText; }
+            get { return systemLogdata; }
             set
             {
-                _systemText = value;
-                OnPropertyChanged("SystemText");
+                systemLogdata = value;
+                OnPropertyChanged("SystemLogData");
 
+                systemLogdataList.Add(systemLogdata);
+                Debug.WriteLine(value.ToString());
                 mw.updateSystem();
 
             }
 
         }
 
-        public Tuple<double, SensorData[]> SData
+        //============== Data Properties ====================//
+
+        public ShimmerData SData
         {
             get { return shimmerData; }
             set
             {
                 shimmerData = value;
                 OnPropertyChanged("SData");
-                SensorData[] data = shimmerData.Item2;
-                //mw.updateShimmerChart(_data);
-                //mw.timeChart.updateShimmerChart(shimmerData.Item1, data[0].Data);
-                chart.Read(data[0].Data);
+
+                chart.Read(shimmerData.GSR);
                 if (recording)
                 {
                     shimmerDataList.Add(shimmerData);
@@ -115,29 +122,28 @@ namespace stressProject
 
         }
 
-        public Tuple<double, string[]> PData
+        public PhoneData PData
         {
             get { return phoneData; }
             set
             {
                 phoneData = value;
                 OnPropertyChanged("PData");
-                string[] data = phoneData.Item2;
                 //mw.updateShimmerChart(_data);
-                mw.pChart.updateShimmerChart(phoneData.Item1, int.Parse(data[0]));
-                mw.AccX.Content = "Acc X: " + data[1];
-                mw.AccY.Content = "Acc Y: " + data[2];
-                mw.AccZ.Content = "Acc Z: " + data[3];
-                mw.RotX.Content = "Rot X: " + data[4];
-                mw.RotY.Content = "Rot Y: " + data[5];
-                mw.RotZ.Content = "Rot Z: " + data[6];
-                mw.GraX.Content = "Gra X: " + data[7];
-                mw.GraY.Content = "Gra Y: " + data[8];
-                mw.GraZ.Content = "Gra Z: " + data[9];
-                mw.currentApp.Content = "Current App: " + data[10];
-                mw.ScreenStatus.Content = "Screen Status: " + data[11];
-                mw.Data_download.Content = "Data Download: " + data[12];
-                mw.Data_upload.Content = "Data Upload: " + data[13];
+                mw.pChart.updateShimmerChart(GetTime(), phoneData.Sound);
+                mw.AccX.Content = "Acc X: " + phoneData.AccX;
+                mw.AccY.Content = "Acc Y: " + phoneData.AccY;
+                mw.AccZ.Content = "Acc Z: " + phoneData.AccZ;
+                mw.RotX.Content = "Rot X: " + phoneData.RotX;
+                mw.RotY.Content = "Rot Y: " + phoneData.RotY;
+                mw.RotZ.Content = "Rot Z: " + phoneData.RotZ;
+                mw.GraX.Content = "Gra X: " + phoneData.GraX;
+                mw.GraY.Content = "Gra Y: " + phoneData.GraY;
+                mw.GraZ.Content = "Gra Z: " + phoneData.GraZ;
+                mw.currentApp.Content = "Current App: " + phoneData.CurrentApp;
+                mw.ScreenStatus.Content = "Screen Status: " + phoneData.ScreenStatus;
+                mw.Data_download.Content = "Data Download: " + phoneData.Downloads;
+                mw.Data_upload.Content = "Data Upload: " + phoneData.Uploads;
 
                 if (recording)
                 {
@@ -147,14 +153,14 @@ namespace stressProject
 
         }
 
-        public Tuple<double, string[]> PTData
+        public TouchData PTData
         {
             get { return phoneTouchData; }
             set
             {
                 phoneTouchData = value;
                 OnPropertyChanged("PTData");
-                string[] data = phoneData.Item2;
+                //string[] data = phoneData.Item2;
                 //mw.updateShimmerChart(_data);
 
                 if (recording)
@@ -167,40 +173,25 @@ namespace stressProject
 
 
 
-
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-        }
-
+        //=================== Write Data =======================//
 
         public void WriteShimmerData(string folderName)
         {
             var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + folderName + "Shimmer.csv");
+            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\Shimmer.csv");
             var csv = new CsvWriter(sw);
 
-            foreach (Tuple<double, SensorData[]> tuple in shimmerDataList)
+            foreach (ShimmerData data in shimmerDataList)
             {
-
-                double time = tuple.Item1 + GetStartTime();
-                string recordedTime = new DateTime(0001, 1, 1, 0, 0, 0).AddSeconds(time).ToString("yyyy MM dd HH:mm:ss.fff");
-
-                OutputSdata s = new OutputSdata(recordedTime, tuple.Item2[0].Data,
-                    tuple.Item2[1].Data, tuple.Item2[2].Data, tuple.Item2[3].Data, tuple.Item2[4].Data);
-
-                records.Add(s);
-
-
+                //Debug.WriteLine(data.Time);
+                records.Add(data);
             }
             Debug.WriteLine(records.Count());
 
+            Debug.WriteLine(((ShimmerData)records.ElementAt(0)).Time);
             Thread thread = new Thread(() => Write(csv, records));
             thread.Start();
         }
-
 
         public void WritePhoneData(string fileName)
         {
@@ -209,22 +200,11 @@ namespace stressProject
             var csv = new CsvWriter(sw);
 
 
-            foreach (Tuple<double, string[]> tuple in phoneDataList)
+            foreach (PhoneData data in phoneDataList)
             {
 
-                double time = tuple.Item1 + GetStartTime();
-                string recordedTime = new DateTime(0001, 1, 1, 0, 0, 0).AddSeconds(time).ToString("yyyy MM dd HH:mm:ss.fff");
 
-                OutputPdata p = new OutputPdata(recordedTime, int.Parse(tuple.Item2[0]),
-                    double.Parse(tuple.Item2[1]), double.Parse(tuple.Item2[2])
-                    , double.Parse(tuple.Item2[3]), double.Parse(tuple.Item2[4])
-                    , double.Parse(tuple.Item2[5]), double.Parse(tuple.Item2[6])
-                    , double.Parse(tuple.Item2[7]), double.Parse(tuple.Item2[8])
-                    , double.Parse(tuple.Item2[9]), tuple.Item2[10]
-                    , tuple.Item2[11], double.Parse(tuple.Item2[12])
-                    , double.Parse(tuple.Item2[13]));
-
-                records.Add(p);
+                records.Add(data);
 
 
             }
@@ -234,6 +214,22 @@ namespace stressProject
             thread.Start();
         }
 
+        public void WriteTouchData(string folderName)
+        {
+            var records = new List<object>();
+            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\Touch.csv");
+            var csv = new CsvWriter(sw);
+
+            foreach (TouchData data in phoneTouchDataList)
+            {
+                //Debug.WriteLine(data.Time);
+                records.Add(data);
+            }
+            Debug.WriteLine(records.Count());
+
+            Thread thread = new Thread(() => Write(csv, records));
+            thread.Start();
+        }
 
         private void Write(CsvWriter csv, dynamic records)
         {
@@ -242,31 +238,26 @@ namespace stressProject
             Debug.WriteLine("record completed");
         }
 
-        public void WriteData(string name) {
-            if (shimmerDataList.Count()>0) {
+        public void WriteData(string name)
+        {
+            if (shimmerDataList.Count() > 0)
+            {
                 WriteShimmerData(name);
             }
-            if (phoneDataList.Count()>0) {
+            if (phoneDataList.Count() > 0)
+            {
                 WritePhoneData(name);
             }
-        }
-
-
-
-        public static MessageTransferStation Instance
-        {
-            get
+            if (phoneTouchDataList.Count() > 0)
             {
-                if (instance == null)
-                {
-                    instance = new MessageTransferStation();
-                }
-                return instance;
+                WriteTouchData(name);
             }
         }
 
 
 
+
+        //====================== Output Data Type ====================//
 
         private class OutputSdata
         {
@@ -332,13 +323,12 @@ namespace stressProject
 
 
 
-
+        //================== Getters =================//
 
         public Guid GetGuid()
         {
             return guid;
         }
-
 
         public double GetTime()
         {
@@ -350,6 +340,12 @@ namespace stressProject
             return startTime;
         }
 
+        public List<SystemLogData> GetSystemLogDatas()
+        {
+            return systemLogdataList;
+        }
+
+        //====================== Recording ====================//
 
         public void startRecording()
         {
@@ -360,6 +356,41 @@ namespace stressProject
         {
             recording = false;
         }
+
+
+        /// <summary>
+        /// this method would convert a time in seconds into a string with the format
+        /// "yyyy//MM//dd HH:mm:ss.fff"
+        /// the input value should be the time in seconds form the process start
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public string DoubleToTimeString(double time)
+        {
+            double totalTime = time + GetStartTime();
+            return new DateTime(0001, 1, 1, 0, 0, 0).AddSeconds(totalTime).ToString("yyyy/MM/dd_HH:mm:ss.fff");
+        }
+
+
+        public static MessageTransferStation Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new MessageTransferStation();
+                }
+                return instance;
+            }
+        }
+
+        // Create the OnPropertyChanged method to raise the event
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        }
+
 
     }
 }
