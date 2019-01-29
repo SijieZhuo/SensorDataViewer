@@ -47,7 +47,7 @@ namespace stressProject
             {
                 if (MessageBox.Show("The File " + name + " is already exist, do you want to overwrite it?", "Saving", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
-                    Directory.Delete(path);
+                    Directory.Delete(path,true);
                     Directory.CreateDirectory(path);
 
                     mts.WriteData(name);
