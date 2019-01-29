@@ -39,6 +39,7 @@ namespace stressProject
         Guid guid = new Guid("6bfc8497-b445-406e-b639-a5abaf4d9739");
         double startTime;
 
+        private bool recording = false;
 
         Stopwatch stopwatch;
 
@@ -104,7 +105,11 @@ namespace stressProject
                 //mw.updateShimmerChart(_data);
                 //mw.timeChart.updateShimmerChart(shimmerData.Item1, data[0].Data);
                 chart.Read(data[0].Data);
-                shimmerDataList.Add(shimmerData);
+                if (recording)
+                {
+                    shimmerDataList.Add(shimmerData);
+                }
+
 
             }
 
@@ -134,8 +139,10 @@ namespace stressProject
                 mw.Data_download.Content = "Data Download: " + data[12];
                 mw.Data_upload.Content = "Data Upload: " + data[13];
 
-                phoneDataList.Add(phoneData);
-
+                if (recording)
+                {
+                    phoneDataList.Add(phoneData);
+                }
             }
 
         }
@@ -150,8 +157,10 @@ namespace stressProject
                 string[] data = phoneData.Item2;
                 //mw.updateShimmerChart(_data);
 
-                phoneTouchDataList.Add(phoneTouchData);
-
+                if (recording)
+                {
+                    phoneTouchDataList.Add(phoneTouchData);
+                }
             }
 
         }
@@ -167,10 +176,10 @@ namespace stressProject
         }
 
 
-        public void writeShimmerData(string fileName)
+        public void WriteShimmerData(string folderName)
         {
             var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + fileName + ".csv");
+            StreamWriter sw = new StreamWriter("Records\\" + folderName + "Shimmer.csv");
             var csv = new CsvWriter(sw);
 
             foreach (Tuple<double, SensorData[]> tuple in shimmerDataList)
@@ -180,7 +189,7 @@ namespace stressProject
                 string recordedTime = new DateTime(0001, 1, 1, 0, 0, 0).AddSeconds(time).ToString("yyyy MM dd HH:mm:ss.fff");
 
                 OutputSdata s = new OutputSdata(recordedTime, tuple.Item2[0].Data,
-                    tuple.Item2[1].Data, tuple.Item2[2].Data, tuple.Item2[3].Data,tuple.Item2[4].Data);
+                    tuple.Item2[1].Data, tuple.Item2[2].Data, tuple.Item2[3].Data, tuple.Item2[4].Data);
 
                 records.Add(s);
 
@@ -193,10 +202,10 @@ namespace stressProject
         }
 
 
-        public void writePhoneData(string fileName)
+        public void WritePhoneData(string fileName)
         {
             var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + fileName + ".csv");
+            StreamWriter sw = new StreamWriter("Records\\" + fileName + "\\Phone.csv");
             var csv = new CsvWriter(sw);
 
 
@@ -233,7 +242,14 @@ namespace stressProject
             Debug.WriteLine("record completed");
         }
 
-
+        public void WriteData(string name) {
+            if (shimmerDataList.Count()>0) {
+                WriteShimmerData(name);
+            }
+            if (phoneDataList.Count()>0) {
+                WritePhoneData(name);
+            }
+        }
 
 
 
@@ -272,7 +288,8 @@ namespace stressProject
             }
         }
 
-        private class OutputPdata{
+        private class OutputPdata
+        {
 
             public string Time { get; set; }
             public int Sound { get; set; }
@@ -331,6 +348,17 @@ namespace stressProject
         public double GetStartTime()
         {
             return startTime;
+        }
+
+
+        public void startRecording()
+        {
+            recording = true;
+        }
+
+        public void stopRecording()
+        {
+            recording = false;
         }
 
     }

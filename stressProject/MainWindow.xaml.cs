@@ -45,6 +45,7 @@ namespace stressProject
 
         bool shimmerOn = false;
         bool phoneOn = false;
+        bool recording = false;
 
         ShimmerSensor sensor;
         PhoneSensor phoneSensor;
@@ -226,22 +227,6 @@ namespace stressProject
 
 
 
-        private void recordBtn_Click(object sender, RoutedEventArgs e)
-        {
-            //string s = Interaction.InputBox("Question?", "Title", "Default Text");
-            //Debug.WriteLine(s);
-            //mts.writeShimmerData();
-            TabItem selected = (TabItem)tabControl.SelectedItem;
-            Debug.WriteLine(selected.Header);
-
-            RecordPopup popup = new RecordPopup(selected.Header.ToString());
-            popup.Show();
-
-
-
-
-        }
-
         
 
         private void phoneBTBtn_Click(object sender, RoutedEventArgs e)
@@ -262,9 +247,25 @@ namespace stressProject
 
         }
 
+        private void RecordBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (!recording)
+            {
+                recordBtn.Content = "Stop";
+                mts.startRecording();
+            }
+            else {
+                recordBtn.Content = "Record";
+                mts.stopRecording();
+                RecordPopup popup = new RecordPopup();
+                popup.Show();
+
+            }
 
 
+            recording = !recording;
 
+        }
     }
 
 }

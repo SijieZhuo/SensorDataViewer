@@ -23,15 +23,13 @@ namespace stressProject
     {
 
         MessageTransferStation mts;
-        string tabName;
 
-        public RecordPopup(string tabName)
+        public RecordPopup()
         {
             InitializeComponent();
             Title = "Save Data";
             mts = MessageTransferStation.Instance;
-            this.tabName = tabName;
-            textBox.Text = tabName + "_output";
+            textBox.Text = "output";
         }
 
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -44,19 +42,14 @@ namespace stressProject
         {
             string name = textBox.Text;
 
-            if (File.Exists(mts.RootDirectory + "\\Records\\" + name + ".csv"))
+            if (File.Exists(mts.RootDirectory + "\\Records\\" + name))
             {
-                if (MessageBox.Show("The File " + name + ".csv is already exist, do you want to overwrite it?", tabName, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                if (MessageBox.Show("The File " + name + " is already exist, do you want to overwrite it?", "Saving", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
-                    File.Delete(mts.RootDirectory + "\\Records\\" + name + ".csv");
-                    if (tabName.Equals("Shimmer"))
-                    {
-                        mts.writeShimmerData(name);
-                    }
-                    else if (tabName.Equals("Phone"))
-                    {
-                        mts.writePhoneData(name);
-                    }
+                    File.Delete(mts.RootDirectory + "\\Records\\" + name);
+                    
+                    mts.WriteData(name);
+                    
                     this.Close();
                 }
 
@@ -65,14 +58,7 @@ namespace stressProject
             else
             {
                 Debug.WriteLine("file not exist");
-                if (tabName.Equals("Shimmer"))
-                {
-                    mts.writeShimmerData(name);
-                }
-                else if (tabName.Equals("Phone"))
-                {
-                    mts.writePhoneData(name);
-                }
+                mts.WriteData(name);
                 this.Close();
             }
 
