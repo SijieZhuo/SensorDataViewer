@@ -36,9 +36,11 @@ namespace stressProject
             using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
             {
                 postData = reader.ReadToEnd();
-                //byte[] array = Encoding.ASCII.GetBytes(postData);
                 byte[] array = Convert.FromBase64String(postData);
                 string s = Encoding.Default.GetString(array);
+
+                string[] chromeData = s.Split(',');
+
 
                 Debug.WriteLine(s);
             }

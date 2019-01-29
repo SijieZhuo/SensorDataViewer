@@ -111,9 +111,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Chart.xaml.cs">
-      <DependentUpon>Chart.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ChromeSensor.cs" />
     <Compile Include="MeasureModel.cs" />
     <Compile Include="MessageTransferStation.cs" />
@@ -122,15 +119,14 @@
       <DependentUpon>RecordPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="DeviceSensors\ShimmerSensor.cs" />
+    <Compile Include="RTChart.xaml.cs">
+      <DependentUpon>RTChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SystemLog\Helper\IgnoreStringHelper.cs" />
     <Compile Include="SystemLog\Helper\LowLevelKeyboardHook.cs" />
     <Compile Include="SystemLog\Helper\WindowHelper.cs" />
     <Compile Include="SystemLog\SystemMonitor.cs" />
     <Compile Include="TimeChart.cs" />
-    <Page Include="Chart.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -144,6 +140,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="RecordPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RTChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

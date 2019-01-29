@@ -42,7 +42,7 @@ namespace stressProject
 
         Stopwatch stopwatch;
 
-
+        RTChart chart;
 
 
 
@@ -61,6 +61,8 @@ namespace stressProject
             stopwatch = new Stopwatch();
             stopwatch.Start();
             startTime = new TimeSpan(DateTime.Now.Ticks).TotalSeconds;
+
+            chart = mw.GetRTChart();
         }
 
         public string MessageText
@@ -100,7 +102,8 @@ namespace stressProject
                 OnPropertyChanged("SData");
                 SensorData[] data = shimmerData.Item2;
                 //mw.updateShimmerChart(_data);
-                mw.timeChart.updateShimmerChart(shimmerData.Item1, data[0].Data);
+                //mw.timeChart.updateShimmerChart(shimmerData.Item1, data[0].Data);
+                chart.Read(data[0].Data);
                 shimmerDataList.Add(shimmerData);
 
             }

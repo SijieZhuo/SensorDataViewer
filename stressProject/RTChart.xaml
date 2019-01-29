@@ -1,0 +1,44 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:stressProject"
+             xmlns:Wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" x:Class="stressProject.RTChart"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Label Content="{Binding Title }" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <Wpf:CartesianChart x:Name="chart" Grid.Row="1" AnimationsSpeed="0:0:0.5" Hoverable="False" DataTooltip="{x:Null}">
+            <Wpf:CartesianChart.Series>
+                <Wpf:LineSeries 
+                                Values="{Binding ChartValues}" 
+                                PointGeometry="{x:Null}" 
+                                StrokeThickness="1" 
+                                Stroke="#F34336"
+                                Fill="Transparent"/>
+            </Wpf:CartesianChart.Series>
+            <Wpf:CartesianChart.AxisX>
+                <Wpf:Axis Title="{Binding AxisXName}"
+                    LabelFormatter="{Binding DateTimeFormatter}" 
+                          MaxValue="{Binding AxisMax}" 
+                          MinValue="{Binding AxisMin}"
+                          Unit="{Binding AxisUnit}">
+                    <Wpf:Axis.Separator>
+                        <Wpf:Separator Step="{Binding AxisStep}" />
+                    </Wpf:Axis.Separator>
+                </Wpf:Axis>
+            </Wpf:CartesianChart.AxisX>
+            <Wpf:CartesianChart.AxisY>
+                <Wpf:Axis Title="{Binding AxisYName}"></Wpf:Axis>
+            </Wpf:CartesianChart.AxisY>
+        </Wpf:CartesianChart>
+
+    </Grid>
+</UserControl>

@@ -85,7 +85,7 @@ namespace stressProject
 
             monitor = new SystemMonitor();
 
-            chart1 = new LiveCharts.Wpf.CartesianChart();
+            //chart1 = new LiveCharts.Wpf.CartesianChart();
 
 
             Directory.CreateDirectory(mts.RootDirectory + "\\Records");
@@ -97,7 +97,9 @@ namespace stressProject
 
         }
 
-
+        public RTChart GetRTChart() {
+            return chart1;
+        }
 
         private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
         {
