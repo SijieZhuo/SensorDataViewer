@@ -210,127 +210,35 @@ namespace stressProject
 
         //=================== Write Data =======================//
 
-        public void WriteShimmerData(string folderName)
-        {
-            var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\Shimmer.csv");
-            var csv = new CsvWriter(sw);
-
-            foreach (ShimmerData data in shimmerDataList)
+        private void Write<T>(string folderName, string name, List<T> list) {
+            using (var writer = new StreamWriter("Records\\" + folderName + "\\"+ name +".csv"))
+            using (var csv = new CsvWriter(writer))
             {
-                //Debug.WriteLine(data.Time);
-                records.Add(data);
+                csv.WriteRecords(list);
             }
-            Debug.WriteLine(records.Count());
-            sw.Flush();
-            Debug.WriteLine(((ShimmerData)records.ElementAt(0)).Time);
-            Thread thread = new Thread(() => Write(csv, records));
-            thread.Start();
-
-        }
-
-        public void WritePhoneData(string fileName)
-        {
-            var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + fileName + "\\Phone.csv");
-            var csv = new CsvWriter(sw);
-
-
-            foreach (PhoneData data in phoneDataList)
-            {
-
-
-                records.Add(data);
-
-
-            }
-            Debug.WriteLine(records.Count());
-
-            Thread thread = new Thread(() => Write(csv, records));
-            thread.Start();
-        }
-
-        public void WriteTouchData(string folderName)
-        {
-            var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\Touch.csv");
-            var csv = new CsvWriter(sw);
-
-            foreach (TouchData data in phoneTouchDataList)
-            {
-                //Debug.WriteLine(data.Time);
-                records.Add(data);
-            }
-            Debug.WriteLine(records.Count());
-
-            Thread thread = new Thread(() => Write(csv, records));
-            thread.Start();
-        }
-
-        public void WriteSystemLogData(string folderName)
-        {
-            var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\SystemLog.csv");
-            var csv = new CsvWriter(sw);
-
-            foreach (SystemLogData data in systemLogdataList)
-            {
-                Debug.WriteLine(data.ModuleName);
-                records.Add(data);
-            }
-            Debug.WriteLine(records.Count());
-
-            Thread thread = new Thread(() => Write(csv, records));
-            thread.Start();
-        }
-
-        public void WriteChromeData(string folderName)
-        {
-            var records = new List<object>();
-            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\Chrome.csv");
-            var csv = new CsvWriter(sw);
-
-            foreach (ChromeData data in chromeDataList)
-            {
-                Debug.WriteLine(data.Time);
-                records.Add(data);
-            }
-            Debug.WriteLine(records.Count());
-
-            Thread thread = new Thread(() => Write(csv, records));
-            thread.Start();
-        }
-
-
-
-        private void Write(CsvWriter csv, dynamic records)
-        {
-            csv.WriteRecords(records);
-            _messageText = "record completed";
-            Debug.WriteLine("record completed");
         }
 
         public void WriteData(string name)
         {
             if (shimmerDataList.Count() > 0)
             {
-                WriteShimmerData(name);
+                Write(name, "Shimmer", shimmerDataList);
             }
             if (phoneDataList.Count() > 0)
             {
-                WritePhoneData(name);
+                Write(name, "Phone", phoneDataList);
             }
             if (phoneTouchDataList.Count() > 0)
             {
-                WriteTouchData(name);
+                Write(name, "Touch", phoneTouchDataList);
             }
             if (systemLogdataList.Count() > 0)
             {
-                //WriteSystemLogData(name);
+                Write(name, "SystemLog", systemLogdataList);
             }
             if (chromeDataList.Count() > 0)
             {
-                WriteChromeData(name);
+                Write(name, "Chrome", chromeDataList);
             }
         }
 

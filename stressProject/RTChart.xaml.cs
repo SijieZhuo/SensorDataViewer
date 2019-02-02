@@ -53,11 +53,10 @@ namespace stressProject
 
             SetAxisLimits(DateTime.Now);
 
-            //The next code simulates data changes every 300 ms
 
             AxisXName = "Time";
-            AxisYName = "Skin Conductance";
-            Title = "GSR";
+            AxisYName = "";
+            Title = "";
 
             
 

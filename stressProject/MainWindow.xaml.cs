@@ -60,7 +60,7 @@ namespace stressProject
         ObservableCollection<ChromeData> chromedataList;
 
 
-
+        ChromeSensor cs;
 
 
 
@@ -90,7 +90,8 @@ namespace stressProject
 
             Directory.CreateDirectory(mts.RootDirectory + "\\Records");
 
-            ChromeSensor cs = new ChromeSensor();
+            //cs = new ChromeSensor();
+            new Thread(setupChrome).Start();
 
             systemLogdataList = new ObservableCollection<SystemLogData>();
             chromedataList = new ObservableCollection<ChromeData>();
@@ -103,6 +104,10 @@ namespace stressProject
             chart3.Setup("Mobile Phone Sound chart", "Time", "Sound/db");
 
 
+        }
+
+        private void setupChrome() {
+            cs = new ChromeSensor();
         }
 
         public RTChart GetRTChart1() {
@@ -185,7 +190,6 @@ namespace stressProject
         {
             systemLogdataList.Add(mts.SystemLogData);
 
-            //textBlock.Text = textBlock.Text + Environment.NewLine + mts.SystemLogData.Time;
 
         }
 
@@ -193,7 +197,6 @@ namespace stressProject
         {
             chromedataList.Add(mts.ChromeData);
 
-            //textBlock.Text = textBlock.Text + Environment.NewLine + mts.SystemLogData.Time;
 
         }
 

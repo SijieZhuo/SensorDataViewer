@@ -14,54 +14,60 @@ namespace stressProject
     class ChromeSensor
     {
 
-        private static HttpListener _listener;
+        private HttpListener _listener;
 
         private static MessageTransferStation mts;
 
 
         public ChromeSensor()
         {
+            mts = MessageTransferStation.Instance;
 
             _listener = new HttpListener();
             _listener.Prefixes.Add("http://localhost:12000/");
             _listener.Start();
-            _listener.BeginGetContext(new AsyncCallback(ChromeSensor.ProcessRequest), null);
 
-            mts = MessageTransferStation.Instance;
+
+            _listener.BeginGetContext(new AsyncCallback(ProcessRequest), this._listener);
+
+
         }
 
-        static void ProcessRequest(IAsyncResult result)
+        public void ProcessRequest(IAsyncResult result)
         {
+            Debug.WriteLine("write");
             HttpListenerContext context = _listener.EndGetContext(result);
             HttpListenerRequest request = context.Request;
 
             //Answer getCommand/get post data/do whatever
 
-           // string postData;
-            //using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
-            //{
-           //     postData = reader.ReadToEnd();
-           //     byte[] array = Convert.FromBase64String(postData);
-           //     string s = Encoding.Default.GetString(array);
-//
-           //     string[] chromeData = s.Split(',');
-           //     Debug.WriteLine("chrome count: " + chromeData.Count());
-           //     ChromeData data = new ChromeData(chromeData[0], int.Parse(chromeData[1]),
-            //                       chromeData[2], chromeData[3], chromeData[4], chromeData[5]);
+            string postData;
+            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+            {
+                postData = reader.ReadToEnd();
+                byte[] array = Convert.FromBase64String(postData);
+                string s = Encoding.Default.GetString(array);
 
-                //UpdateData(data);
+                string[] chromeData = s.Split(',');
+                
+                ChromeData data = new ChromeData(chromeData[0], int.Parse(chromeData[1]),
+                                   chromeData[2], chromeData[3], chromeData[4], int.Parse(chromeData[5]));
+                Debug.WriteLine("chrome count: " + data.TabID);
+                UpdateData(data);
 
-                Debug.WriteLine("write");
-           // }
-        
-            _listener.BeginGetContext(new AsyncCallback(ChromeSensor.ProcessRequest), null);
+            }
+            _listener.Close();
 
-            
+
+            _listener = new HttpListener();
+            _listener.Prefixes.Add("http://localhost:12000/");
+            _listener.Start();
+            _listener.BeginGetContext(new AsyncCallback(ProcessRequest), this._listener);
 
 
         }
 
-        private static void UpdateData(ChromeData data)
+        private void UpdateData(ChromeData data)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

@@ -13,9 +13,9 @@ namespace stressProject.OutputData
         public string URL { get; set; }
         public string TabName { get; set; }
         public string TabTitle { get; set; }
-        public string TabID { get; set; }
+        public int TabID { get; set; }
 
-        public ChromeData(string time, int numTabs, string uRL, string tabName, string tabTitle, string tabID)
+        public ChromeData(string time, int numTabs, string uRL, string tabName, string tabTitle, int tabID)
         {
             Time = time;
             NumTabs = numTabs;
