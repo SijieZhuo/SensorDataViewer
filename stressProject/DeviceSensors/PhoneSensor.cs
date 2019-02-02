@@ -71,7 +71,7 @@ namespace stressProject
                     //updateTouchData(new Tuple<double, string[]>(mts.GetTime() - startTime, phoneData));
 
                     TouchData data = new TouchData(phoneData[0], phoneData[1], phoneData[2], phoneData[3], phoneData[4], phoneData[5], phoneData[6]);
-                    updateTouchData(data);
+                    UpdateTouchData(data);
                     Debug.WriteLine("touch: " + s);
                 }
 
@@ -97,7 +97,7 @@ namespace stressProject
         }
 
 
-        private void updateTouchData(TouchData data)
+        private void UpdateTouchData(TouchData data)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace MonitorApp.Helper
@@ -16,6 +17,7 @@ namespace MonitorApp.Helper
             try
             {
                 string path = System.IO.Directory.GetCurrentDirectory() + @"\ignoreList.txt";
+                Debug.WriteLine(path);
                 string[] FileContents = System.IO.File.ReadAllLines(path);
                 ignoreList = FileContents.ToList();
             }

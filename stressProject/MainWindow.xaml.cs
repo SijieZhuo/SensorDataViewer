@@ -30,6 +30,7 @@ using InTheHand.Net;
 using System.IO;
 using stressProject.SystemLog;
 using stressProject.OutputData;
+using System.Collections.ObjectModel;
 
 namespace stressProject
 {
@@ -50,20 +51,15 @@ namespace stressProject
 
         ShimmerSensor sensor;
         PhoneSensor phoneSensor;
-        RealTimeChart shimmerChart;
-        public TimeChart timeChart;
-        public TimeChart pChart;
+       // public TimeChart timeChart;
+        //public TimeChart pChart;
 
         private SystemMonitor monitor;
 
-         List<SystemLogData> systemLogdataList;
+        ObservableCollection<SystemLogData> systemLogdataList;
+        ObservableCollection<ChromeData> chromedataList;
 
 
-
-        public TimeChart GetTimeChart()
-        {
-            return timeChart;
-        }
 
 
 
@@ -81,11 +77,11 @@ namespace stressProject
 
             //sp.Children.Add(shimmerChart);
 
-            timeChart = new TimeChart(500, 300, "Shimmer", "GSR", 0, 2000, 200);
-            sp.Children.Add(timeChart.GetTimeChart());
+            //timeChart = new TimeChart(500, 300, "Shimmer", "GSR", 0, 2000, 200);
+           // sp.Children.Add(timeChart.GetTimeChart());
 
-            pChart = new TimeChart(500, 300, "sound", "db", 0, 150, 15);
-            sp2.Children.Add(pChart.GetTimeChart());
+            //pChart = new TimeChart(500, 300, "sound", "db", 0, 150, 15);
+            //sp2.Children.Add(pChart.GetTimeChart());
 
             monitor = new SystemMonitor();
 
@@ -96,15 +92,29 @@ namespace stressProject
 
             ChromeSensor cs = new ChromeSensor();
 
-            systemLogdataList = new List<SystemLogData>();
+            systemLogdataList = new ObservableCollection<SystemLogData>();
+            chromedataList = new ObservableCollection<ChromeData>();
 
             DG1.DataContext = systemLogdataList;
+            DG2.DataContext = chromedataList;
+
+            chart1.Setup("Shimmer GSR chart", "Time", "Skin Conductance");
+            chart2.Setup("Shimmer PPG chart", "Time", "PPG");
+            chart3.Setup("Mobile Phone Sound chart", "Time", "Sound/db");
 
 
         }
 
-        public RTChart GetRTChart() {
+        public RTChart GetRTChart1() {
             return chart1;
+        }
+        public RTChart GetRTChart2()
+        {
+            return chart2;
+        }
+        public RTChart GetRTChart3()
+        {
+            return chart3;
         }
 
         private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
@@ -171,10 +181,18 @@ namespace stressProject
 
         }
 
-        public void updateSystem()
+        public void UpdateSystem()
         {
-            systemLogdataList = mts.GetSystemLogDatas();
-            DG1.DataContext = mts.GetSystemLogDatas();
+            systemLogdataList.Add(mts.SystemLogData);
+
+            //textBlock.Text = textBlock.Text + Environment.NewLine + mts.SystemLogData.Time;
+
+        }
+
+        public void UpdateChrome()
+        {
+            chromedataList.Add(mts.ChromeData);
+
             //textBlock.Text = textBlock.Text + Environment.NewLine + mts.SystemLogData.Time;
 
         }
@@ -190,6 +208,8 @@ namespace stressProject
             bool shimmerOrNot = name.Contains("Shimmer");
             return shimmerOrNot;
         }
+
+
 
         private void Shimmer_Click(object sender, RoutedEventArgs e)
         {
@@ -221,11 +241,7 @@ namespace stressProject
                 {
                     sensor.disconnect();
                     shimmerBtn.Content = "Connect";
-                    //sp.Children.Remove(shimmerChart);
-                    timeChart = new TimeChart(500, 300, "Shimmer", "GSR", 0, 2000, 200);
-                    //shimmerChart = new RealTimeChart();
-                    //RealTimechartSetup(shimmerChart);
-                    sp.Children.Add(timeChart.GetTimeChart());
+
                 }
             }
         }

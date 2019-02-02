@@ -112,7 +112,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ChromeSensor.cs" />
-    <Compile Include="MeasureModel.cs" />
+    <Compile Include="OutputData\ChromeData.cs" />
+    <Compile Include="OutputData\MeasureModel.cs" />
     <Compile Include="MessageTransferStation.cs" />
     <Compile Include="DeviceSensors\PhoneSensor.cs" />
     <Compile Include="OutputData\PhoneData.cs" />

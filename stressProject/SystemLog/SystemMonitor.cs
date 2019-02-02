@@ -18,7 +18,7 @@ namespace stressProject.SystemLog
     {
 
         private const uint WINEVENT_OUTOFCONTEXT = 0;
-        // private const uint EVENT_SYSTEM_FOREGROUND = 3;
+        private const uint EVENT_SYSTEM_FOREGROUND = 3;
         private const uint EVENT_OBJECT_NAMECHANGE = 0x800C;
         private const int KEYBOARD_TIMER_INTERVAL = 2000;
 
@@ -75,7 +75,7 @@ namespace stressProject.SystemLog
                 //ystemLogData data = new SystemLogData();
                 string foregroundWindowLog = currentTimpstamp + "," + foregroundWindowLogInfo + ",focused";
                 logArray = foregroundWindowLog.Split(',');
-                 data = new SystemLogData(logArray[0], logArray[1], logArray[2], logArray[3]);
+                data = new SystemLogData(logArray[0], logArray[1], logArray[2], logArray[3]);
 
                 //_logger.Info(foregroundWindowLog);
                 updateData(data);
@@ -88,12 +88,11 @@ namespace stressProject.SystemLog
                     if (!_ignoreStringHelper.shouldIgnoreThisString(windowInfo))
                     {
                         string log = currentTimpstamp + "," + windowInfo + ",visible";
-                         logArray = log.Split(',');
-                         data = new SystemLogData(logArray[0], logArray[1], logArray[2], logArray[3]);
+                        logArray = log.Split(',');
+                        data = new SystemLogData(logArray[0], logArray[1], logArray[2], logArray[3]);
 
                         //_logger.Info(log);
                         updateData(data);
-                        Debug.WriteLine(windowInfo);
                     }
                 }
             }
@@ -102,7 +101,7 @@ namespace stressProject.SystemLog
                 // _logger.Warn(e.Message);
                 Debug.WriteLine(e);
 
-               //updateMessage(e.Message);
+                //updateMessage(e.Message);
             }
         }
 

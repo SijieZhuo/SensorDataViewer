@@ -34,8 +34,12 @@ namespace stressProject
         public TouchData phoneTouchData;
         public List<TouchData> phoneTouchDataList;
 
-        private SystemLogData systemLogdata;
+        public SystemLogData systemLogdata;
         public List<SystemLogData> systemLogdataList;
+
+        public ChromeData chromeData;
+        public List<ChromeData> chromeDataList;
+
 
 
 
@@ -47,7 +51,7 @@ namespace stressProject
 
         Stopwatch stopwatch;
 
-        RTChart chart;
+        RTChart chart1, chart2, chart3;
 
 
 
@@ -57,18 +61,21 @@ namespace stressProject
         public MessageTransferStation()
         {
             _messageText = string.Empty;
-            systemLogdata = null;
             mw = (MainWindow)Application.Current.MainWindow;
+
             shimmerDataList = new List<ShimmerData>();
             phoneDataList = new List<PhoneData>();
             phoneTouchDataList = new List<TouchData>();
             systemLogdataList = new List<SystemLogData>();
+            chromeDataList = new List<ChromeData>();
 
             stopwatch = new Stopwatch();
             stopwatch.Start();
             startTime = new TimeSpan(DateTime.Now.Ticks).TotalSeconds;
 
-            chart = mw.GetRTChart();
+            chart1 = mw.GetRTChart1();
+            chart2 = mw.GetRTChart2();
+            chart3 = mw.GetRTChart3();
         }
 
         public string MessageText
@@ -85,21 +92,7 @@ namespace stressProject
 
         }
 
-        public SystemLogData SystemLogData
-        {
-            get { return systemLogdata; }
-            set
-            {
-                systemLogdata = value;
-                OnPropertyChanged("SystemLogData");
 
-                systemLogdataList.Add(systemLogdata);
-                Debug.WriteLine(value.ToString());
-                mw.updateSystem();
-
-            }
-
-        }
 
         //============== Data Properties ====================//
 
@@ -111,7 +104,10 @@ namespace stressProject
                 shimmerData = value;
                 OnPropertyChanged("SData");
 
-                chart.Read(shimmerData.GSR);
+                chart1.Read(shimmerData.GSR);
+
+                chart2.Read(shimmerData.PPG);
+
                 if (recording)
                 {
                     shimmerDataList.Add(shimmerData);
@@ -130,7 +126,9 @@ namespace stressProject
                 phoneData = value;
                 OnPropertyChanged("PData");
                 //mw.updateShimmerChart(_data);
-                mw.pChart.updateShimmerChart(GetTime(), phoneData.Sound);
+                //mw.pChart.updateShimmerChart(GetTime(), phoneData.Sound);
+                chart3.Read(phoneData.Sound);
+
                 mw.AccX.Content = "Acc X: " + phoneData.AccX;
                 mw.AccY.Content = "Acc Y: " + phoneData.AccY;
                 mw.AccZ.Content = "Acc Z: " + phoneData.AccZ;
@@ -171,6 +169,43 @@ namespace stressProject
 
         }
 
+        public SystemLogData SystemLogData
+        {
+            get { return systemLogdata; }
+            set
+            {
+                systemLogdata = value;
+                OnPropertyChanged("SystemLogData");
+
+                mw.UpdateSystem();
+                if (recording)
+                {
+                    systemLogdataList.Add(systemLogdata);
+                    Debug.WriteLine("systemlog wrote");
+                }
+
+            }
+
+        }
+
+        public ChromeData ChromeData
+        {
+            get { return chromeData; }
+            set
+            {
+                chromeData = value;
+                OnPropertyChanged("ChromeData");
+
+                mw.UpdateChrome();
+                Debug.WriteLine("chrome data: " + chromeData);
+                if (recording)
+                {
+                    chromeDataList.Add(chromeData);
+                    Debug.WriteLine("chrome wrote");
+                }
+            }
+
+        }
 
 
         //=================== Write Data =======================//
@@ -187,10 +222,11 @@ namespace stressProject
                 records.Add(data);
             }
             Debug.WriteLine(records.Count());
-
+            sw.Flush();
             Debug.WriteLine(((ShimmerData)records.ElementAt(0)).Time);
             Thread thread = new Thread(() => Write(csv, records));
             thread.Start();
+
         }
 
         public void WritePhoneData(string fileName)
@@ -231,6 +267,42 @@ namespace stressProject
             thread.Start();
         }
 
+        public void WriteSystemLogData(string folderName)
+        {
+            var records = new List<object>();
+            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\SystemLog.csv");
+            var csv = new CsvWriter(sw);
+
+            foreach (SystemLogData data in systemLogdataList)
+            {
+                Debug.WriteLine(data.ModuleName);
+                records.Add(data);
+            }
+            Debug.WriteLine(records.Count());
+
+            Thread thread = new Thread(() => Write(csv, records));
+            thread.Start();
+        }
+
+        public void WriteChromeData(string folderName)
+        {
+            var records = new List<object>();
+            StreamWriter sw = new StreamWriter("Records\\" + folderName + "\\Chrome.csv");
+            var csv = new CsvWriter(sw);
+
+            foreach (ChromeData data in chromeDataList)
+            {
+                Debug.WriteLine(data.Time);
+                records.Add(data);
+            }
+            Debug.WriteLine(records.Count());
+
+            Thread thread = new Thread(() => Write(csv, records));
+            thread.Start();
+        }
+
+
+
         private void Write(CsvWriter csv, dynamic records)
         {
             csv.WriteRecords(records);
@@ -251,6 +323,14 @@ namespace stressProject
             if (phoneTouchDataList.Count() > 0)
             {
                 WriteTouchData(name);
+            }
+            if (systemLogdataList.Count() > 0)
+            {
+                //WriteSystemLogData(name);
+            }
+            if (chromeDataList.Count() > 0)
+            {
+                WriteChromeData(name);
             }
         }
 

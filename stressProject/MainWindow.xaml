@@ -26,6 +26,7 @@
                     <ScrollViewer HorizontalAlignment="Left" Height="352" VerticalAlignment="Top" Width="612" RenderTransformOrigin="-0.223,0.262">
                         <StackPanel x:Name="sp" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="586" RenderTransformOrigin="0.485,0.524">
                             <local:RTChart x:Name="chart1" Height="268"/>
+                            <local:RTChart x:Name="chart2" Height="268"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
@@ -60,6 +61,8 @@
                                 <Label x:Name="Data_download" Content="Data Download: " HorizontalAlignment="Left" Margin="203,125,0,0" VerticalAlignment="Top" Height="30" Width="150" FontSize="14" Grid.ColumnSpan="2"/>
                                 <Label x:Name="Data_upload" Content="Data Upload: " HorizontalAlignment="Left" Margin="44.667,125,0,0" VerticalAlignment="Top" Height="30" Width="150" FontSize="14" Grid.Column="1"/>
                             </Grid>
+                            <local:RTChart x:Name="chart3" Height="268"/>
+
                         </StackPanel>
                     </ScrollViewer>
 
@@ -72,11 +75,15 @@
                 <Grid Background="#FFE5E5E5">
                     <ScrollViewer HorizontalAlignment="Left" Height="342" VerticalAlignment="Top" Width="602" RenderTransformOrigin="-0.223,0.262">
                         <DataGrid x:Name="DG1" ItemsSource="{Binding}" Height="276" Width="560" />
-
-
-
                     </ScrollViewer>
+                </Grid>
+            </TabItem>
 
+            <TabItem Header="Chrome">
+                <Grid Background="#FFE5E5E5">
+                    <ScrollViewer HorizontalAlignment="Left" Height="342" VerticalAlignment="Top" Width="602" RenderTransformOrigin="-0.223,0.262">
+                        <DataGrid x:Name="DG2" ItemsSource="{Binding}" Height="276" Width="560" />
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 

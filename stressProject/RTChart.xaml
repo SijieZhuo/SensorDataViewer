@@ -7,7 +7,7 @@
              xmlns:Wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" x:Class="stressProject.RTChart"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
-    <Grid>
+    <Grid x:Name="grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -22,7 +22,8 @@
                                 PointGeometry="{x:Null}" 
                                 StrokeThickness="1" 
                                 Stroke="#F34336"
-                                Fill="Transparent"/>
+                                Fill="Transparent"
+                                LineSmoothness="0"/>
             </Wpf:CartesianChart.Series>
             <Wpf:CartesianChart.AxisX>
                 <Wpf:Axis Title="{Binding AxisXName}"

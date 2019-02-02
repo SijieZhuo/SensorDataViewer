@@ -122,6 +122,12 @@ namespace stressProject
             AxisMin = now.Ticks - TimeSpan.FromSeconds(8).Ticks; // and 8 seconds behind
         }
 
+        public void Setup(string title, string xTitle, string yTitle) {
+            AxisXName = xTitle;
+            AxisYName = yTitle;
+            Title = title;
+        }
+
         
 
         #region INotifyPropertyChanged implementation
