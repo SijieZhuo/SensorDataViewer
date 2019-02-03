@@ -124,6 +124,9 @@ namespace stressProject
             return chart3;
         }
 
+
+        //================ BlueTooth ====================//
+
         private void BTSearchBtn_Click(object sender, RoutedEventArgs e)
         {
 
@@ -182,27 +185,6 @@ namespace stressProject
             {
                 shimmerBtn.IsEnabled = true;
             }
-
-        }
-
-        public void updateTextBox()
-        {
-
-            textBox.Text = mts.MessageText;
-
-        }
-
-        public void UpdateSystem()
-        {
-            systemLogdataList.Add(mts.SystemLogData);
-
-
-        }
-
-        public void UpdateChrome()
-        {
-            chromedataList.Add(mts.ChromeData);
-
 
         }
 
@@ -266,6 +248,7 @@ namespace stressProject
             {
                 phoneSensor = new PhoneSensor();
                 new Thread(phoneSensor.PhoneConnection).Start();
+                phoneBTBtn.IsEnabled = false;
                 phoneBTBtn.Content = "Disconnect";
             }
             phoneOn = !phoneOn;
@@ -292,6 +275,26 @@ namespace stressProject
             recording = !recording;
 
         }
-    }
 
+
+
+        //================ UI update =====================//
+
+        public void updateTextBox()
+        {
+            textBox.Text = mts.MessageText;
+        }
+
+        public void UpdateSystem()
+        {
+            systemLogdataList.Add(mts.SystemLogData);
+        }
+
+        public void UpdateChrome()
+        {
+            chromedataList.Add(mts.ChromeData);
+        }
+
+
+ }
 }

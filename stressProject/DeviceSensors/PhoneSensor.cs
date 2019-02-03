@@ -18,7 +18,7 @@ namespace stressProject
         Guid guid;
         private MessageTransferStation mts;
         bool connected;
-        BluetoothClient client;
+        public BluetoothClient client;
 
         private double startTime;
 
@@ -41,6 +41,7 @@ namespace stressProject
             connected = true;
             Stream mStream = client.GetStream();
             startTime = mts.GetTime();
+            updateConnection();
             while (connected)
             {
                 ReceivingData(mStream);
@@ -113,6 +114,13 @@ namespace stressProject
             client.Close();
         }
 
+
+        private void updateConnection() {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                mts.mw.phoneBTBtn.IsEnabled = true;
+            });
+        }
 
     }
 }
