@@ -52,7 +52,6 @@ namespace stressProject
                 
                 ChromeData data = new ChromeData(chromeData[0], int.Parse(chromeData[1]),
                                    chromeData[2], chromeData[3], chromeData[4], int.Parse(chromeData[5]));
-                Debug.WriteLine("chrome count: " + data.TabID);
                 UpdateData(data);
 
             }

@@ -50,7 +50,7 @@ namespace stressProject
             {
                 shimmer.WriteSensors(enabledSensors);
                 updateMessage("Shimmer device is connected");
-
+                updateBtn();
                 shimmer.StartStreaming();
                 startTime = mts.GetTime();
             }
@@ -124,6 +124,13 @@ namespace stressProject
             Application.Current.Dispatcher.Invoke(() =>
             {
                 mts.MessageText = message;
+            });
+        }
+
+        private void updateBtn() {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                mts.mw.shimmerBtn.IsEnabled = true;
             });
         }
 

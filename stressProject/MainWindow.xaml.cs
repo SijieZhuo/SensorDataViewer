@@ -51,7 +51,7 @@ namespace stressProject
 
         ShimmerSensor sensor;
         PhoneSensor phoneSensor;
-       // public TimeChart timeChart;
+        // public TimeChart timeChart;
         //public TimeChart pChart;
 
         private SystemMonitor monitor;
@@ -78,7 +78,7 @@ namespace stressProject
             //sp.Children.Add(shimmerChart);
 
             //timeChart = new TimeChart(500, 300, "Shimmer", "GSR", 0, 2000, 200);
-           // sp.Children.Add(timeChart.GetTimeChart());
+            // sp.Children.Add(timeChart.GetTimeChart());
 
             //pChart = new TimeChart(500, 300, "sound", "db", 0, 150, 15);
             //sp2.Children.Add(pChart.GetTimeChart());
@@ -106,11 +106,13 @@ namespace stressProject
 
         }
 
-        private void setupChrome() {
+        private void setupChrome()
+        {
             cs = new ChromeSensor();
         }
 
-        public RTChart GetRTChart1() {
+        public RTChart GetRTChart1()
+        {
             return chart1;
         }
         public RTChart GetRTChart2()
@@ -176,7 +178,11 @@ namespace stressProject
                 comboBox.Items.Add(entry.Key);
             }
             comboBox.SelectedIndex = 0;
-            shimmerBtn.IsEnabled = true;
+            if (BTmap.Count > 0)
+            {
+                shimmerBtn.IsEnabled = true;
+            }
+
         }
 
         public void updateTextBox()
@@ -204,15 +210,13 @@ namespace stressProject
 
 
 
-
+        //=================== Shimmer Sensor ====================//
 
         private bool checkShimmer(string name)
         {
             bool shimmerOrNot = name.Contains("Shimmer");
             return shimmerOrNot;
         }
-
-
 
         private void Shimmer_Click(object sender, RoutedEventArgs e)
         {
@@ -228,9 +232,7 @@ namespace stressProject
 
                     sensor = new ShimmerSensor(BTmap[comboBox.SelectedItem.ToString()]);
                     new Thread(sensor.setup).Start();
-                    shimmerBtn.IsEnabled = true;
                     shimmerBtn.Content = "Diconnect";
-
                 }
                 else
                 {
@@ -244,14 +246,13 @@ namespace stressProject
                 {
                     sensor.disconnect();
                     shimmerBtn.Content = "Connect";
-
                 }
             }
         }
 
 
 
-        
+
 
         private void phoneBTBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -259,7 +260,7 @@ namespace stressProject
             {
                 phoneSensor.disconnect();
                 phoneBTBtn.Content = "Connect";
-               
+
             }
             else
             {
@@ -278,7 +279,8 @@ namespace stressProject
                 recordBtn.Content = "Stop";
                 mts.startRecording();
             }
-            else {
+            else
+            {
                 recordBtn.Content = "Record";
                 mts.stopRecording();
                 RecordPopup popup = new RecordPopup();

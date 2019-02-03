@@ -23,7 +23,7 @@ namespace stressProject
 
         private string _messageText;
 
-        private MainWindow mw;
+        public MainWindow mw;
 
         public ShimmerData shimmerData;
         public List<ShimmerData> shimmerDataList;
@@ -105,7 +105,6 @@ namespace stressProject
                 OnPropertyChanged("SData");
 
                 chart1.Read(shimmerData.GSR);
-
                 chart2.Read(shimmerData.PPG);
 
                 if (recording)
@@ -125,8 +124,7 @@ namespace stressProject
             {
                 phoneData = value;
                 OnPropertyChanged("PData");
-                //mw.updateShimmerChart(_data);
-                //mw.pChart.updateShimmerChart(GetTime(), phoneData.Sound);
+
                 chart3.Read(phoneData.Sound);
 
                 mw.AccX.Content = "Acc X: " + phoneData.AccX;
@@ -158,15 +156,12 @@ namespace stressProject
             {
                 phoneTouchData = value;
                 OnPropertyChanged("PTData");
-                //string[] data = phoneData.Item2;
-                //mw.updateShimmerChart(_data);
 
                 if (recording)
                 {
                     phoneTouchDataList.Add(phoneTouchData);
                 }
             }
-
         }
 
         public SystemLogData SystemLogData
@@ -181,7 +176,6 @@ namespace stressProject
                 if (recording)
                 {
                     systemLogdataList.Add(systemLogdata);
-                    Debug.WriteLine("systemlog wrote");
                 }
 
             }
@@ -197,11 +191,9 @@ namespace stressProject
                 OnPropertyChanged("ChromeData");
 
                 mw.UpdateChrome();
-                Debug.WriteLine("chrome data: " + chromeData);
                 if (recording)
                 {
                     chromeDataList.Add(chromeData);
-                    Debug.WriteLine("chrome wrote");
                 }
             }
 
@@ -210,8 +202,9 @@ namespace stressProject
 
         //=================== Write Data =======================//
 
-        private void Write<T>(string folderName, string name, List<T> list) {
-            using (var writer = new StreamWriter("Records\\" + folderName + "\\"+ name +".csv"))
+        private void Write<T>(string folderName, string name, List<T> list)
+        {
+            using (var writer = new StreamWriter("Records\\" + folderName + "\\" + name + ".csv"))
             using (var csv = new CsvWriter(writer))
             {
                 csv.WriteRecords(list);
@@ -241,8 +234,6 @@ namespace stressProject
                 Write(name, "Chrome", chromeDataList);
             }
         }
-
-
 
         //================== Getters =================//
 
