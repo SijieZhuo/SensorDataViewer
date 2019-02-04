@@ -41,8 +41,6 @@ namespace stressProject
         public List<ChromeData> chromeDataList;
 
 
-
-
         public string RootDirectory = Directory.GetCurrentDirectory();
         Guid guid = new Guid("6bfc8497-b445-406e-b639-a5abaf4d9739");
         double startTime;
