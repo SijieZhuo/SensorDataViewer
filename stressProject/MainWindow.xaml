@@ -36,9 +36,9 @@
             </TabItem>
             <TabItem Header="Phone">
                
-                    <ScrollViewer RenderTransformOrigin="-0.223,0.262" Grid.ColumnSpan="5" Margin="0">
-                        <StackPanel x:Name="sp2" Width="586" RenderTransformOrigin="0.485,0.524">
-                            <Grid x:Name="dataGrid" HorizontalAlignment="Center" Height="188" Margin="11,10,1,0" VerticalAlignment="Center" Width="574" Grid.Row="3" Grid.Column="3">
+                    <ScrollViewer  Grid.ColumnSpan="5" Margin="0">
+                        <StackPanel x:Name="sp2" >
+                            <Grid x:Name="dataGrid" Margin="11,10,1,0" Grid.Row="3" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="313*"/>
                                     <ColumnDefinition Width="261*"/>
@@ -67,10 +67,10 @@
                 
             </TabItem>
 
-            <TabItem Header="SystemLog" HorizontalAlignment="Left" Margin="-1.667,-2,-2,0" Width="73">
+            <TabItem Header="SystemLog" HorizontalAlignment="Left" Margin="0">
                 <Grid Background="#FFE5E5E5">
                     <ScrollViewer RenderTransformOrigin="-0.223,0.262">
-                        <DataGrid x:Name="DG1" ItemsSource="{Binding}" Height="276" Width="560" />
+                        <DataGrid x:Name="DG1" ItemsSource="{Binding}" Margin="20,30" />
                     </ScrollViewer>
                 </Grid>
             </TabItem>
@@ -78,7 +78,7 @@
             <TabItem Header="Chrome">
                 <Grid Background="#FFE5E5E5">
                     <ScrollViewer RenderTransformOrigin="-0.223,0.262">
-                        <DataGrid x:Name="DG2" ItemsSource="{Binding}" Height="276" Width="560" />
+                        <DataGrid x:Name="DG2" ItemsSource="{Binding}" Margin="20,30" />
                     </ScrollViewer>
                 </Grid>
             </TabItem>
