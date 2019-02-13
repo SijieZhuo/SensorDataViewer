@@ -8,7 +8,7 @@ Currently, the device that can be connected to this application includes: Shimme
 
 The data collected and displayed would be from the shimmer, android phone, and the PC (which includes system log and Chrome log).
 
-SensorDataViewer was developed for the research project conducted at the University of Auckland.
+SensorDataViewer was developed by part 4 software student for the research project conducted at the University of Auckland.
 
 **Currently only tested in Windows 10**
 
