@@ -31,7 +31,7 @@ Also, this application would display the data from these sensors to the user
 The data would be from 4 different parts: Shimmer sensor, Android phone, system log, and Chrome log.
 
 ### Shimmer
-The shimmer 3 device would collect 5 different set of data for now. The configuration of the device is set by this application.
+The shimmer 3 device would collect 5 different sets of data for now. The configuration of the device is set by this application.
 
 The Data includes:
 
@@ -39,8 +39,8 @@ The Data includes:
 - GSR signal
 - Accelerometer signal(3 sets of data, x, y, z).
 
-This application uses the official Shimmer API the manufactuer provided. It is used to connect the decive to PC (via bluetooth), 
-and configurate the shimmer device, and tranfer the data to PC.
+This application uses the official Shimmer API the manufacturer provided. It is used to connect the device to the PC (via Bluetooth),
+and configurate the shimmer device, and transfer the data to the PC.
 
 ### Android phone
 The Android phone collects the data via an app, which can be found in the link:
@@ -95,8 +95,8 @@ The data would include:
 - TabID of currently viewed tab
 
 ## Recorded File
-The data will be saved in .csv file. There would be a folder in the root directory called "Records", 
+The data will be saved in .csv files. There would be a folder in the root directory called "Records", 
 and each save would create a folder inside "Records", and it would include a number of .csv file.
 
-Depending on the number of sensors connected to application, the number of .csv file 
+Depending on the number of sensors connected to the application, the number of .csv file 
 would be different. 
