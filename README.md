@@ -2,7 +2,7 @@
 
 ## What is a SensorDataViewer ?
 SensorDataViewer is an C# Windows Presentation Foundation(WPF) application that allows user
-to view the data user collected from different devices.
+to view and store the data user collected from different devices.
 
 Currently, the device that can be connected to this application includes: Shimmer 3, and Android phone.
 
