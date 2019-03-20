@@ -17,7 +17,7 @@
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -111,11 +111,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ChromeSensor.cs" />
+    <Compile Include="Sensors\ChromeSensor.cs" />
     <Compile Include="OutputData\ChromeData.cs" />
     <Compile Include="OutputData\MeasureModel.cs" />
     <Compile Include="MessageTransferStation.cs" />
-    <Compile Include="DeviceSensors\PhoneSensor.cs" />
+    <Compile Include="Sensors\DeviceSensors\PhoneSensor.cs" />
     <Compile Include="OutputData\PhoneData.cs" />
     <Compile Include="OutputData\ShimmerData.cs" />
     <Compile Include="OutputData\SystemLogData.cs" />
@@ -123,15 +123,14 @@
     <Compile Include="RecordPopup.xaml.cs">
       <DependentUpon>RecordPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DeviceSensors\ShimmerSensor.cs" />
+    <Compile Include="Sensors\DeviceSensors\ShimmerSensor.cs" />
     <Compile Include="RTChart.xaml.cs">
       <DependentUpon>RTChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SystemLog\Helper\IgnoreStringHelper.cs" />
-    <Compile Include="SystemLog\Helper\LowLevelKeyboardHook.cs" />
-    <Compile Include="SystemLog\Helper\WindowHelper.cs" />
-    <Compile Include="SystemLog\SystemMonitor.cs" />
-    <Compile Include="TimeChart.cs" />
+    <Compile Include="Sensors\SystemLog\Helper\IgnoreStringHelper.cs" />
+    <Compile Include="Sensors\SystemLog\Helper\LowLevelKeyboardHook.cs" />
+    <Compile Include="Sensors\SystemLog\Helper\WindowHelper.cs" />
+    <Compile Include="Sensors\SystemLog\SystemMonitor.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
